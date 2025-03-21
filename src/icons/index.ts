@@ -70,3 +70,8 @@ export { default as ImagesIcon } from "./ImagesIcon";
 export { default as MagicIcon } from "./MagicIcon";
 export { default as AppleIcon } from "./AppleIcon";
 export { default as LinkIcon } from "./LinkIcon";
+export { default as LegalIcon } from "./LegalIcon";
+export { default as BadDocumentIcon } from "./BadDocumentIcon";
+export { default as DocumentIcon } from "./DocumentIcon";
+export { default as GoodDocumentIcon } from "./GoodDocumentIcon";
+export { default as CreditIcon } from "./CreditIcon";

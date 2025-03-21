@@ -8,12 +8,11 @@ import { getDbInstance } from "../utils/db";
 const RootLayout = (props: any) => {
   const db = getDbInstance();
   const { success, error } = useMigrations(db, migrations);
-  console.log(success);
-  console.log(error);
+ 
   return (
     <Suspense fallback={<ActivityIndicator size="large" />}>
       <SQLiteProvider
-        databaseName="collage"
+        databaseName="boof-assistant"
         options={{ enableChangeListener: true }}
         useSuspense
       >

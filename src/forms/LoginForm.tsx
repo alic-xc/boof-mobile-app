@@ -34,7 +34,6 @@ const LoginForm = () => {
           email: values.email,
           password: values.password,
         };
-        console.log(data);
         const response = handleLogin(values.email, values.password);
         response
           .then((res) => {

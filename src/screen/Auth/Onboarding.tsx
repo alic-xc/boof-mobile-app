@@ -147,7 +147,7 @@ const Onboarding = ({ navigation }) => {
           </View>
           <Button
             style="py-2 mt-2 h-13 rounded-md"
-            onPress={() => navigation.navigate("Registration")}
+            onPress={() => navigation.navigate("SubscriptionQuiz")}
           >
             <View
               style={tw`flex flex-row items-center gap-2 flex-1 justify-center`}

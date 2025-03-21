@@ -23,8 +23,15 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { supabase } from "./src/utils/superbase";
 import Onboarding from "./src/screen/Auth/Onboarding";
 import colors from "./src/constant/Color";
+import LoadingScreen from "./src/screen/LoadingScreen";
+import Details from "./src/screen/Details";
+import RootLayout from "./src/components/RootLayout";
+import Profile from "./src/screen/Profile";
+import SubscriptionQuiz from "./src/screen/Auth/SubscriptionQuiz";
+import { adapty } from "react-native-adapty";
+import { HAS_SEEN_ONBOARDING } from "./src/utils/constants";
 
-const HAS_SEEN_ONBOARDING = "hasSeenOnboarding";
+adapty.activate("public_live_Oj95PwKo.2TszD3zYdnpxMae3bwBm");
 
 // Function to check if user has seen onboarding
 const checkOnboardingStatus = async () => {
@@ -90,17 +97,18 @@ export default function App() {
   return (
     <GestureHandlerRootView>
       <NotifierWrapper>
-        <NavigationContainer>
-          <OnboardingStack.Navigator
-          initialRouteName={
-            Boolean(onboarding)
-              ? session && session.user && !isLoading
-                ? "Dashboard"
-                : "Registration"
-              : "Onboarding"
-          }
-          >
-            {!onboarding && (
+        <RootLayout>
+          <NavigationContainer>
+            <OnboardingStack.Navigator
+              initialRouteName={
+                Boolean(onboarding)
+                  ? session && session.user && !isLoading
+                    ? "Dashboard"
+                    : "Login"
+                  : "Onboarding"
+              }
+            >
+              {/* {!onboarding && ( */}
               <OnboardingStack.Screen
                 name="Onboarding"
                 component={Onboarding}
@@ -108,68 +116,98 @@ export default function App() {
                   headerShown: false,
                 }}
               />
-            )}
+              <OnboardingStack.Screen
+                name="SubscriptionQuiz"
+                component={SubscriptionQuiz}
+                options={{
+                  headerShown: false,
+                }}
+              />
+              {/* )} */}
 
-            <OnboardingStack.Screen
-              name="Registration"
-              component={AuthRegistration}
-              options={{
-                headerShown: false,
-              }}
-            />
-            <OnboardingStack.Screen
-              name="Login"
-              component={AuthLogin}
-              options={{
-                headerShown: false,
-              }}
-            />
-            <OnboardingStack.Screen
-              name="OTP"
-              component={AuthOTP}
-              options={{
-                headerShown: false,
-              }}
-            />
-            <OnboardingStack.Screen
-              name="ResetPassword"
-              component={AuthResetPassword}
-              options={{
-                headerShown: false,
-              }}
-            />
-            <OnboardingStack.Screen
-              name="ResetPasswordRequest"
-              component={AuthResetPasswordRequest}
-              options={{
-                headerShown: false,
-              }}
-            />
+              <OnboardingStack.Screen
+                name="Registration"
+                component={AuthRegistration}
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <OnboardingStack.Screen
+                name="Login"
+                component={AuthLogin}
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <OnboardingStack.Screen
+                name="OTP"
+                component={AuthOTP}
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <OnboardingStack.Screen
+                name="ResetPassword"
+                component={AuthResetPassword}
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <OnboardingStack.Screen
+                name="ResetPasswordRequest"
+                component={AuthResetPasswordRequest}
+                options={{
+                  headerShown: false,
+                }}
+              />
 
-            <OnboardingStack.Screen
-              name="Dashboard"
-              component={AppTab}
-              options={{
-                headerShown: false,
-              }}
-            />
+              <OnboardingStack.Screen
+                name="Dashboard"
+                component={AppTab}
+                options={{
+                  headerShown: false,
+                }}
+              />
 
-            <OnboardingStack.Screen
-              name="Payment"
-              component={Payment}
-              options={{
-                headerShown: false,
-              }}
-            />
-            <OnboardingStack.Screen
-              name="About"
-              component={AboutUsScreen}
-              options={{
-                headerShown: false,
-              }}
-            />
-          </OnboardingStack.Navigator>
-        </NavigationContainer>
+              <OnboardingStack.Screen
+                name="Loading"
+                component={LoadingScreen}
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <OnboardingStack.Screen
+                name="Details"
+                component={Details}
+                options={{
+                  headerShown: false,
+                }}
+              />
+
+              <OnboardingStack.Screen
+                name="Payment"
+                component={Payment}
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <OnboardingStack.Screen
+                name="Profile"
+                component={Profile}
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <OnboardingStack.Screen
+                name="About"
+                component={AboutUsScreen}
+                options={{
+                  headerShown: false,
+                }}
+              />
+            </OnboardingStack.Navigator>
+          </NavigationContainer>
+        </RootLayout>
       </NotifierWrapper>
     </GestureHandlerRootView>
   );
@@ -198,7 +236,7 @@ const AppTab = () => {
           height: 70,
           paddingHorizontal: 20,
           borderColor: "transparent",
-          backgroundColor: "transparent",
+          backgroundColor: "white",
           borderWidth: 2,
           boxShadow: "none",
           paddingBottom: 3,
@@ -216,7 +254,7 @@ const AppTab = () => {
         },
       })}
     >
-      <Tab.Screen name="Home" component={Dashboard} />
+      <Tab.Screen name="Assistant" component={Dashboard} />
       <Tab.Screen name="Settings" component={Settings} />
     </Tab.Navigator>
   );

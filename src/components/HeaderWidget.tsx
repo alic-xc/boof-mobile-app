@@ -42,7 +42,7 @@ const HeaderWidget = ({ title, goBack }: IDashboardAnalytics) => {
             </Text>
           </View>
         </View>
-        <NotificationIcon width={25} height={25} color="#1e2424" />
+        {/* <NotificationIcon width={25} height={25} color="#1e2424" /> */}
       </View>
     </View>
   );

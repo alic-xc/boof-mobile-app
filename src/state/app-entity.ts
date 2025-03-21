@@ -7,6 +7,7 @@ export const AppEntity = entity<IAppEntity>({
   session: null,
   onboarding: false,
   format: "default",
-  data: "",
+  data: [],
   url: "",
+  analysis: null,
 });

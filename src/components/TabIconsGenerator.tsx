@@ -1,5 +1,5 @@
 import React from "react";
-import { PointFilledIcon, PointIcon, SettingsIcon } from "../icons";
+import { LegalIcon, PointFilledIcon, PointIcon, SettingsIcon } from "../icons";
 import DashboardIcon from "../icons/DashboardIcon";
 
 interface TabIConsGeneratorProps {
@@ -12,11 +12,11 @@ interface TabIConsGeneratorProps {
 const TabIconsGenerator = (props: TabIConsGeneratorProps) => {
   let icon;
   switch (props.route) {
-    case "Home":
+    case "Assistant":
       icon = props.focused ? (
-        <DashboardIcon width={28} height={28} color={props.color} />
+        <LegalIcon width={28} height={28} color={props.color} />
       ) : (
-        <DashboardIcon width={28} height={28} color={props.color} />
+        <LegalIcon width={28} height={28} color={props.color} />
       );
       break;
 

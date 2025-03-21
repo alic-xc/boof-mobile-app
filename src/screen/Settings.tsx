@@ -21,26 +21,14 @@ const More = () => {
   const data: (ListItemProps | any)[] = [
     {
       icon: rightIcon,
-      component: (
-        <View style={tw``}>
-          <Text style={tw`text-lg font-bold`}>Profile</Text>
-          <Text style={tw`text-sm `}>Edit your profile and subscription</Text>
-        </View>
-      ),
+      component: <Text style={tw`text-lg font-bold`}>Profile</Text>,
       onPress: () => {
-        navigation.navigate("About");
+        navigation.navigate("Profile");
       },
     },
     {
       icon: rightIcon,
-      component: (
-        <View style={tw``}>
-          <Text style={tw`text-lg font-bold`}>About Us</Text>
-          <Text style={tw`text-sm `}>
-            Know more about us. Who we are and what we do
-          </Text>
-        </View>
-      ),
+      component: <Text style={tw`text-lg font-bold`}>About Us</Text>,
       onPress: () => {
         navigation.navigate("About");
       },
@@ -48,12 +36,7 @@ const More = () => {
 
     {
       icon: rightIcon,
-      component: (
-        <View style={tw``}>
-          <Text style={tw`text-lg font-bold`}>Term of Use </Text>
-          <Text style={tw`text-sm `}>Guidelines for using our app</Text>
-        </View>
-      ),
+      component: <Text style={tw`text-lg font-bold`}>Term of Use </Text>,
       onPress: () => {
         navigation.navigate("Terms");
       },
@@ -61,24 +44,14 @@ const More = () => {
 
     {
       icon: rightIcon,
-      component: (
-        <View style={tw``}>
-          <Text style={tw`text-lg font-bold`}>Privacy & Policy</Text>
-          <Text style={tw`text-sm `}>How we protect data</Text>
-        </View>
-      ),
+      component: <Text style={tw`text-lg font-bold`}>Privacy & Policy</Text>,
       onPress: () => {
         navigation.navigate("Privacy");
       },
     },
     {
       icon: rightIcon,
-      component: (
-        <View style={tw``}>
-          <Text style={tw`text-lg font-bold`}>Sign Out</Text>
-          <Text style={tw`text-sm `}>Logout of your account</Text>
-        </View>
-      ),
+      component: <Text style={tw`text-lg font-bold`}>Sign Out</Text>,
       onPress: () => {
         handleLogout().then((res) => {
           if (res === "completed") {
@@ -91,9 +64,9 @@ const More = () => {
 
   return (
     <GestureHandlerRootView>
-      <SafeAreaView style={tw`flex flex-1 flex-col gap-3 pt-5 px-2 `}>
+      <SafeAreaView style={tw`flex flex-1 flex-col gap-3 pt-5 px-4 `}>
         <View>
-          <Text style={tw`text-2xl font-bold`}>App Info</Text>
+          <Text style={tw`text-2xl font-bold`}>App Settings</Text>
           <Text style={tw`text-lg`}>Learn more about our app and services</Text>
         </View>
 

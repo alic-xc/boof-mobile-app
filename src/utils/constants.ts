@@ -4,3 +4,6 @@ export const PAPERSIZE = [
   { name: "4x6", width: 102, height: 152 },
   { name: "5x7", width: 127, height: 178 },
 ];
+
+export const HAS_SEEN_ONBOARDING = "hasSeenOnboarding";
+export const BASE_URL = "https://4cb5-105-113-111-172.ngrok-free.app";
