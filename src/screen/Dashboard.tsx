@@ -1,4 +1,11 @@
-import { View, Text, Alert, RefreshControl, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  Alert,
+  RefreshControl,
+  Pressable,
+  ActivityIndicator,
+} from "react-native";
 import React, { useLayoutEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import tw from "twrnc";
@@ -17,6 +24,7 @@ import {
   LinkIcon,
   NoteBookIcon,
   PDFIcon,
+  TextIcon,
 } from "../icons";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../types/navigation-types";
@@ -37,8 +45,12 @@ import { formatDate, formatDateOnly } from "../utils/dateFormatter";
 import Widget from "../components/Widget";
 import {
   getSubscriptionStatus,
+  subscriber,
   syncSubscriptionWithServer,
 } from "../utils/paywall";
+import { TextInputSchema, UrlSchema } from "../schema/Dashboard";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { HAS_SEEN_ONBOARDING } from "../utils/constants";
 
 const HAS_SHOWN_RATING_KEY = "hasShownRating";
 const HAS_CONVERTED_PDF_KEY = "hasConvertedPDF";
@@ -47,6 +59,9 @@ const Dashboard = () => {
   const { session } = AppEntity.use();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const [modalVisible, setModalVisible] = React.useState<boolean>(false);
+  const [textModalVisible, setTextModalVisible] =
+    React.useState<boolean>(false);
+  const [urlModalVisible, setUrlModalVisible] = React.useState<boolean>(false);
   const [isLoading, setIsLoading] = React.useState(false);
 
   const [isCompletionModalVisible, setIsCompletionModalVisible] =
@@ -95,32 +110,49 @@ const Dashboard = () => {
     //   },
     //   icon: <CameraIcon color={colors.primary} width={30} height={30} />,
     // },
-    // {
-    //   component: (
-    //     <View style={tw``}>
-    //       <Text style={tw`text-xl`}>Enter URL</Text>
-    //       <Text style={tw`text-sm mt-1 `}>Insert link to agreement</Text>
-    //     </View>
-    //   ),
-    //   containerStyle: "bg-[#f1f1f1]",
-    //   onPress: () => {
-    //     setModalVisible(false);
-    //   },
-    //   icon: <LinkIcon color={colors.primary} width={30} height={30} />,
-    // },
+    {
+      component: (
+        <View style={tw``}>
+          <Text style={tw`text-xl`}>Enter Text</Text>
+          <Text style={tw`text-sm mt-1 `}>Insert link to agreement</Text>
+        </View>
+      ),
+      containerStyle: "bg-[#f1f1f1]",
+      onPress: () => {
+        setTextModalVisible(true);
+      },
+      icon: <TextIcon color={colors.primary} width={30} height={30} />,
+    },
+    {
+      component: (
+        <View style={tw``}>
+          <Text style={tw`text-xl`}>Enter URL</Text>
+          <Text style={tw`text-sm mt-1 `}>Insert link to agreement</Text>
+        </View>
+      ),
+      containerStyle: "bg-[#f1f1f1]",
+      onPress: () => {
+        setUrlModalVisible(true);
+      },
+      icon: <LinkIcon color={colors.primary} width={30} height={30} />,
+    },
   ];
 
   React.useEffect(() => {
     getAllLegalDocs();
   }, []);
+
   React.useEffect(() => {
     getSubscriptionStatus().then((response) => {
-      console.log(response);
+      const sub = response;
+      if (!sub.isActive) {
+        syncSubscriptionWithServer();
+      }
     });
-    // syncSubscriptionWithServer()
   }, []);
 
   const onRefresh = React.useCallback(async () => {
+
     setRefreshing(true);
     await getAllLegalDocs();
     setRefreshing(false);
@@ -175,10 +207,7 @@ const Dashboard = () => {
         const fileName = `uploaded_doc_${Date.now()}.pdf`;
         const cachedUri = `${FileSystem.cacheDirectory}${fileName}`;
         await FileSystem.copyAsync({ from: result[0].uri, to: cachedUri });
-        // setSelectedPdf({
-        //   uri: cachedUri,
-        //   name: fileName,
-        // });
+
         Alert.alert(
           `${result[0].name}.`,
           `Do you wish to proceed this document?`,
@@ -194,6 +223,7 @@ const Dashboard = () => {
                 AppEntity.set((state) => {
                   return {
                     ...state,
+                    format: "pdf",
                     data: [cachedUri],
                   };
                 });
@@ -211,25 +241,54 @@ const Dashboard = () => {
 
   const data = [
     {
-      title: "Total Reports",
-      total: analytics?.totalReports,
-      icon: <DocumentIcon width={20} height={20} color="black" />,
+      title: (
+        <View>
+          <Text style={tw`text-lg font-bold`}>Total </Text>
+          <Text> Docs</Text>
+        </View>
+      ),
+      icon: (
+        <Text style={tw`font-bold text-lg`}>{analytics?.totalReports}</Text>
+      ),
     },
     {
-      title: "Low Risk Docs",
-      total: analytics?.lowRiskDocuments,
-      icon: <GoodDocumentIcon width={20} height={20} color="green" />,
+      title: (
+        <View>
+          <Text style={tw`text-lg font-bold text-green-500`}>Low </Text>
+          <Text>Risk Docs</Text>
+        </View>
+      ),
+      icon: (
+        <Text style={tw`font-bold text-lg`}>{analytics?.lowRiskDocuments}</Text>
+      ),
     },
     {
-      title: "High Risk Docs",
+      title: (
+        <View>
+          <Text style={tw`text-lg font-bold text-red-500`}>High </Text>
+          <Text>Risk Docs</Text>
+        </View>
+      ),
       total: analytics?.highRiskDocuments,
-      icon: <BadDocumentIcon width={20} height={20} color="red" />,
+      icon: (
+        <Text style={tw`font-bold text-lg`}>
+          {analytics?.highRiskDocuments}
+        </Text>
+      ),
     },
 
     {
-      title: "Medium Risk Docs",
-      total: analytics?.mediumRiskDocuments,
-      icon: <CreditIcon width={20} height={20} color="green" />,
+      title: (
+        <View>
+          <Text style={tw`text-lg font-bold text-yellow-600`}>Medium </Text>
+          <Text>Risk Docs</Text>
+        </View>
+      ),
+      icon: (
+        <Text style={tw`font-bold text-lg`}>
+          {analytics?.mediumRiskDocuments}
+        </Text>
+      ),
     },
   ];
 
@@ -238,15 +297,11 @@ const Dashboard = () => {
       <BottomSheetModalProvider>
         <SafeAreaView style={tw`flex flex-1 grow pb-4  px-2 bg-white`}>
           <HeaderWidget />
-          <View style={tw`flex-row gap-1 flex-wrap justify-between`}>
+          <View style={tw`flex-row  flex-wrap justify-between`}>
             {data.map((item) => {
               return (
                 <View style={tw`w-[49%] py-2 rounded-xl`}>
-                  <Widget
-                    icon={item.icon}
-                    title={item.title}
-                    total={item.total}
-                  />
+                  <Widget icon={item.icon} title={item.title} />
                 </View>
               );
             })}
@@ -329,6 +384,137 @@ const Dashboard = () => {
                   onPress={item.onPress}
                 />
               ))}
+            </View>
+          </BottomSheet>
+          <BottomSheet
+            isActive={textModalVisible}
+            height={"65%"}
+            enableDynamicSizing={false}
+            enableSnap={true}
+            closeModal={() => setTextModalVisible(false)}
+          >
+            <View style={tw`flex flex-col gap-2 flex-1 px-4 py-2`}>
+              <Text style={tw`text-2xl  mb-3`}>Quick Actions</Text>
+
+              <Formik
+                initialValues={{ text: "" }}
+                validationSchema={TextInputSchema}
+                onSubmit={(values, { setSubmitting }) => {
+                  AppEntity.set((state) => {
+                    return {
+                      ...state,
+                      format: "text",
+                      data: values.text,
+                    };
+                  });
+                  navigation.navigate("Loading");
+                }}
+              >
+                {({
+                  handleChange,
+                  handleBlur,
+                  handleSubmit,
+                  isSubmitting,
+                  errors,
+                  touched,
+                }) => (
+                  <View style={tw`mb-4`}>
+                    <TextInput
+                      title="Paste Legal Text"
+                      name="text"
+                      placeholder="Enter up to 5000 characters"
+                      containerStyle="h-20 bg-[#f1f1f1] rounded-lg p-2"
+                      style="border-0 border-[transparent] bg-[#f1f1f1] rounded-lg p-2"
+                      multiline={true}
+                      maxLength={5000}
+                      onChangeText={handleChange("text")}
+                      onBlur={handleBlur("text")}
+                    />
+                    {touched.text && errors.text && (
+                      <Text style={tw`text-red-500 text-sm`}>
+                        {errors.text}
+                      </Text>
+                    )}
+                    <Button
+                      style="mt-2 rounded-lg"
+                      onPress={handleSubmit}
+                      isDisabled={isSubmitting}
+                    >
+                      <View
+                        style={tw`flex flex-row items-center px-5 gap-2 py-2 justify-center`}
+                      >
+                        {isSubmitting && (
+                          <ActivityIndicator size="small" color="#fff" />
+                        )}
+                        <Text style={tw`text-white text-lg`}>Submit Text</Text>
+                      </View>
+                    </Button>
+                  </View>
+                )}
+              </Formik>
+            </View>
+          </BottomSheet>
+          <BottomSheet
+            isActive={urlModalVisible}
+            height={"45%"}
+            enableDynamicSizing={false}
+            enableSnap={true}
+            closeModal={() => setUrlModalVisible(false)}
+          >
+            <View style={tw`flex flex-col gap-2 flex-1 px-4 py-2`}>
+              <Text style={tw`text-2xl  mb-3`}>Quick Actions</Text>
+              <Formik
+                initialValues={{ url: "" }}
+                validationSchema={UrlSchema}
+                onSubmit={(values, { setSubmitting }) => {
+                  AppEntity.set((state) => {
+                    return {
+                      ...state,
+                      format: "url",
+                      data: values.url,
+                    };
+                  });
+                  navigation.navigate("Loading");
+                }}
+              >
+                {({
+                  handleChange,
+                  handleBlur,
+                  handleSubmit,
+                  isSubmitting,
+                  errors,
+                  touched,
+                }) => (
+                  <View style={tw`mb-4`}>
+                    <TextInput
+                      title="Enter URL"
+                      name="url"
+                      placeholder="https://example.com/terms"
+                      containerStyle="bg-[#f1f1f1] rounded-lg p-2"
+                      style="border-0 border-[transparent] bg-[#f1f1f1] rounded-lg p-2"
+                      onChangeText={handleChange("url")}
+                      onBlur={handleBlur("url")}
+                    />
+                    {touched.url && errors.url && (
+                      <Text style={tw`text-red-500 text-sm`}>{errors.url}</Text>
+                    )}
+                    <Button
+                      style="mt-2 rounded-lg"
+                      onPress={handleSubmit}
+                      isDisabled={isSubmitting}
+                    >
+                      <View
+                        style={tw`flex flex-row items-center px-5 gap-2 py-2 justify-center`}
+                      >
+                        {isSubmitting && (
+                          <ActivityIndicator size="small" color="#fff" />
+                        )}
+                        <Text style={tw`text-white text-lg`}>Submit URL</Text>
+                      </View>
+                    </Button>
+                  </View>
+                )}
+              </Formik>
             </View>
           </BottomSheet>
         </SafeAreaView>

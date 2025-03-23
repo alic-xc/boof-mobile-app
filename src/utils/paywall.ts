@@ -10,12 +10,14 @@ import { Alert } from "react-native";
 import * as SecureStore from "expo-secure-store";
 import { AppEntity } from "../state/app-entity";
 import { BASE_URL } from "./constants";
+import { Adapty } from "react-native-adapty/dist/adapty-handler";
 
 interface SubscriptionStatus {
   type: "weekly" | "monthly" | "yearly" | "none";
   isActive: boolean;
   expiryDate?: string;
   isTrial?: boolean;
+  credit_remaining: number;
 }
 
 // Fetch subscription status from server
@@ -40,8 +42,9 @@ export const getSubscriptionStatus = async (): Promise<SubscriptionStatus> => {
     if (!response.ok) throw new Error("Failed to fetch subscription status");
 
     const data = await response.json();
-
+    console.log(data);
     return {
+      credit_remaining: data.credits_remaining,
       type:
         data.subscriptions.length > 0
           ? data.subscriptions[0].product_id.split(".").pop().toLowerCase()
@@ -70,7 +73,7 @@ export const syncSubscriptionWithServer = async () => {
     if (!token) throw new Error("User not logged in, cannot sync subscription");
 
     const profile = await adapty.getProfile();
-
+    await adapty.identify(profile.profileId);
     // Find the active access level
     const activeAccessLevel = Object.values(profile?.accessLevels).find(
       (level: any) => level.isActive
@@ -90,9 +93,8 @@ export const syncSubscriptionWithServer = async () => {
       console.log("No active subscription to sync");
       return;
     }
-
     const purchaseType = productId.split(".").pop().toLowerCase();
-    const url = BASE_URL + "/api/user/verify-subscription/";
+    const url = BASE_URL + "/api/user/verify-subscription";
     const response = await fetch(url, {
       method: "POST",
       headers: {
@@ -105,7 +107,7 @@ export const syncSubscriptionWithServer = async () => {
         is_trial: isTrial,
       }),
     });
-
+    console.log("RESPONSE", response);
     if (!response.ok) {
       const errorText = await response.text();
       throw new Error(`Failed to sync subscription with server: ${errorText}`);
@@ -139,9 +141,15 @@ export const subscriber = async () => {
               if (token) {
                 // If user is logged in, notify server immediately
                 const profile = await adapty.getProfile();
-                const isTrial =
-                  profile.accessLevels.premium?.isInGracePeriod || false;
-                await notifyServer(product.productId, isTrial);
+                await adapty.identify(profile.profileId);
+                profile.profileId;
+
+                const activeAccessLevel = Object.values(
+                  profile?.accessLevels
+                ).find((level: any) => level.isActive);
+                const isTrial = activeAccessLevel.isInGracePeriod || false;
+                const productId = activeAccessLevel.vendorProductId;
+                await notifyServer(profile.profileId, isTrial);
               } else {
                 // If not logged in, sync will happen later
                 console.log(

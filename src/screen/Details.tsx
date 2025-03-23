@@ -10,6 +10,7 @@ import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
+  runOnJS,
 } from "react-native-reanimated";
 import Svg, { Circle } from "react-native-svg";
 import { AppEntity } from "../state/app-entity";
@@ -29,6 +30,7 @@ const Details = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const [analysis, setAnalysis] = useState<LegalAnalysis | null>(null);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [triggerchange, setTriggerchange] = useState<boolean>(false);
   const [selectedPoint, setSelectedPoint] = useState<
     LegalAnalysis["analysis"]["keyPoints"][0] | null
   >(null);
@@ -45,14 +47,20 @@ const Details = () => {
     if (singleLegalDoc) {
       const parsedAnalysis = JSON.parse(singleLegalDoc.content);
       setAnalysis(parsedAnalysis);
-      riskPercent.value = withTiming(parsedAnalysis.summary.riskScore, {
-        duration: 1000,
-      });
-      fairnessPercent.value = withTiming(parsedAnalysis.fairness.score, {
-        duration: 1000,
-      });
+      // Ensure animation runs after analysis is available
+      riskPercent.value = 0; // Reset to 0 first
+      fairnessPercent.value = 0; // Reset to 0 first
+      setTimeout(() => {
+        riskPercent.value = withTiming(parsedAnalysis.summary.riskScore, {
+          duration: 1000,
+        });
+        fairnessPercent.value = withTiming(parsedAnalysis.fairness.score, {
+          duration: 1000,
+        });
+        setTriggerchange(true);
+      }, 50);
     }
-  }, [singleLegalDoc]);
+  }, [singleLegalDoc, riskPercent, fairnessPercent]);
 
   const animatedRiskStyle = useAnimatedStyle(() => ({
     opacity: withTiming(analysis ? 1 : 0, { duration: 500 }),
@@ -92,7 +100,6 @@ const Details = () => {
     }
   };
 
-  // Custom Animated Ring Component
   const AnimatedRing = ({
     percent,
     label,
@@ -110,17 +117,31 @@ const Details = () => {
       };
     });
 
-    const color = isRisk
-      ? percent.value > 70
-        ? "#ff0000"
+    // Add animated color style
+    const animatedColorStyle = useAnimatedStyle(() => {
+      const color = isRisk
+        ? percent.value > 70
+          ? "#ff0000"
+          : percent.value > 30
+          ? "#ffff00"
+          : "#00ff00"
+        : percent.value > 70
+        ? "#00ff00"
         : percent.value > 30
         ? "#ffff00"
-        : "#00ff00"
-      : percent.value > 70
-      ? "#00ff00"
-      : percent.value > 30
-      ? "#ffff00"
-      : "#ff0000";
+        : "#ff0000";
+      return { stroke: color };
+    });
+
+    const [displayPercent, setDisplayPercent] = useState(0);
+
+    useEffect(() => {
+      const interval = setInterval(() => {
+        runOnJS(setDisplayPercent)(Math.round(riskPercent.value));
+      }, 100);
+
+      return () => clearInterval(interval);
+    }, [riskPercent]);
 
     return (
       <View style={tw`items-center`}>
@@ -132,7 +153,6 @@ const Details = () => {
           }}
         >
           <Svg width="100" height="100" viewBox="0 0 200 200">
-            {/* Background Circle */}
             <Circle
               cx="100"
               cy="100"
@@ -141,20 +161,17 @@ const Details = () => {
               strokeWidth="30"
               fill="transparent"
             />
-            {/* Animated Foreground Circle */}
             <AnimatedCircle
               cx="100"
               cy="100"
               r="80"
-              stroke={color}
               strokeWidth="20"
               fill="transparent"
               strokeDasharray={circumference}
-              style={strokeDashoffset}
+              style={[strokeDashoffset, animatedColorStyle]}
               strokeLinecap="round"
             />
           </Svg>
-          {/* Position text absolutely over the SVG */}
           <View
             style={{
               position: "absolute",
@@ -175,7 +192,6 @@ const Details = () => {
       </View>
     );
   };
-
   return (
     <GestureHandlerRootView>
       <BottomSheetModalProvider>

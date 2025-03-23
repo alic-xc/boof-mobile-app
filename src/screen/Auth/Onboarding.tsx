@@ -13,9 +13,8 @@ import tw from "twrnc";
 import Button from "../../components/Button";
 import { SafeAreaView } from "react-native-safe-area-context";
 import colors from "../../constant/Color";
-import RealTimeSyncIcon from "../../icons/RealTimeSyncIcon";
-import OnlinePaymentIcon from "../../icons/OnlinePaymentIcon";
-import AnalyticIcon from "../../icons/AnalyticIcon";
+import JudgeIcon from "../../icons/JudgeIcon";
+import ContractIcon from "../../icons/ContractIcon";
 
 interface PageProps {
   id: number;
@@ -32,7 +31,7 @@ const Onboarding = ({ navigation }) => {
   const [currentFinanceText, setCurrentFinanceText] = useState(0);
   const financeTextAnim = React.useRef(new Animated.Value(0)).current;
   const financeTexts = ["budget", "wealth", "savings", "investments"];
-  const IconComponents = [AnalyticIcon, RealTimeSyncIcon, OnlinePaymentIcon];
+  const IconComponents = [JudgeIcon, ContractIcon];
 
   const textFadeAnim = React.useRef(new Animated.Value(1)).current;
   const translateAnim = React.useRef(new Animated.Value(0)).current;
@@ -99,7 +98,7 @@ const Onboarding = ({ navigation }) => {
             useNativeDriver: true,
           }).start(() => {
             // Move to next icon
-            setCurrentIcon((prev) => (prev + 1) % 3);
+            setCurrentIcon((prev) => (prev + 1) % 2);
           });
         }, 1500);
       });
@@ -122,12 +121,10 @@ const Onboarding = ({ navigation }) => {
 
   return (
     <SafeAreaView style={[tw`flex flex-col justify-between flex-1 pt-5 grow`]}>
-      <View>
-        <Text style={tw`text-center font-bold text-4xl text-[#1e2424] `}>
-          Boof Assistant
-        </Text>
+      <View style={tw`flex flex-row`}>
+        <Text style={tw`text-2xl px-2 font-light`}>LegalBoof</Text>
       </View>
-      <View style={tw`flex flex-row justify-center`}>
+      <View style={tw`flex flex-row justify-center mt-10`}>
         <Animated.View style={iconAnimStyle}>
           {React.createElement(IconComponents[currentIcon], {
             width: 250,
@@ -135,24 +132,26 @@ const Onboarding = ({ navigation }) => {
           })}
         </Animated.View>
       </View>
-      <View style={tw`bg-white rounded-t-5 h-80`}>
+      <View style={tw`bg-white rounded-5 h-60 m-2 `}>
         <View
-          style={tw`flex flex-1 flex-col justify-between gap-4 px-4 pb-10 pt-15`}
+          style={tw`flex flex-1 flex-col justify-between gap-2 px-4 pb-10 pt-15`}
         >
           <View>
-            <Text style={tw`text-center text-3xl font-bold`}>Hi</Text>
+            <Text style={tw`text-center text-3xl font-bold`}>
+              Join the Club
+            </Text>
             <Text style={tw`text-center text-lg font-semibold mt-1`}>
               Your legal assistant is here.
             </Text>
           </View>
           <Button
-            style="py-2 mt-2 h-13 rounded-md"
+            style="py-2 mt-2 h-13 rounded-4xl"
             onPress={() => navigation.navigate("SubscriptionQuiz")}
           >
             <View
               style={tw`flex flex-row items-center gap-2 flex-1 justify-center`}
             >
-              <Text style={tw`text-white text-lg`}>Continue</Text>
+              <Text style={tw`text-white text-lg`}>Get Started</Text>
             </View>
           </Button>
         </View>

@@ -6,4 +6,4 @@ export const PAPERSIZE = [
 ];
 
 export const HAS_SEEN_ONBOARDING = "hasSeenOnboarding";
-export const BASE_URL = "https://4cb5-105-113-111-172.ngrok-free.app";
+export const BASE_URL = "https://boof-api.alicsystems.com";

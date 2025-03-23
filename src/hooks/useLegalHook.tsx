@@ -326,7 +326,6 @@ const useLegalHook = () => {
       React.SetStateAction<"pending" | "loading" | "active" | "error">
     >,
     country: string,
-    navigation: any // Assuming navigation prop is passed
   ) => {
     if (!text) {
       setAnalyseStatus("error");

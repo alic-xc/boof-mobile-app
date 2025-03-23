@@ -169,14 +169,14 @@ const SubscriptionQuiz = ({ navigation }) => {
         {options.map((option, index) => (
           <TouchableOpacity
             key={index}
-            style={tw`py-3 mt-3 rounded-md ${
+            style={tw`py-3 mt-3 rounded-6 ${
               selectedOption === index
                 ? `bg-[${colors.secondary}]`
                 : `bg-[${colors.primary}]`
             }`}
             onPress={() => onSelectOption(option.score, index)}
           >
-            <Text style={tw`text-white text-lg text-center`}>
+            <Text style={tw`text-white text-lg text-center font-bold`}>
               {option.text}
             </Text>
           </TouchableOpacity>
@@ -251,22 +251,13 @@ const SubscriptionQuiz = ({ navigation }) => {
 
         <View style={tw`mb-6`}>
           <TouchableOpacity
-            style={tw`py-4 rounded-md bg-[${colors.primary}]`}
+            style={tw`py-4 rounded-6 bg-[${colors.primary}]`}
             onPress={onSubscribe}
           >
             <Text style={tw`text-white text-lg font-bold text-center`}>
               Get Started
             </Text>
           </TouchableOpacity>
-
-          {/* <TouchableOpacity
-            style={tw`py-3 mt-3 rounded-md border border-gray-300`}
-            onPress={onSkip}
-          >
-            <Text style={tw`text-gray-500 text-center`}>
-              Continue without protection
-            </Text>
-          </TouchableOpacity> */}
         </View>
       </View>
     );

@@ -75,3 +75,4 @@ export { default as BadDocumentIcon } from "./BadDocumentIcon";
 export { default as DocumentIcon } from "./DocumentIcon";
 export { default as GoodDocumentIcon } from "./GoodDocumentIcon";
 export { default as CreditIcon } from "./CreditIcon";
+export { default as TextIcon } from "./TextIcon";

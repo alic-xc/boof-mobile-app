@@ -115,25 +115,25 @@ const RegistrationForm = () => {
                 containerStyle="h-[45px]"
               />
             </View>
-            <View style={tw`flex flex-row items-center flex-1 gap-2 `}>
-              <Button
-                style="py-2 mt-2 flex-1 rounded-md"
-                onPress={() => {
-                  handleSubmit();
-                }}
-                isDisabled={isSubmitting}
+            <Button
+              style="py-3 mt-2 flex-1 rounded-md"
+              onPress={() => {
+                handleSubmit();
+              }}
+              isDisabled={isSubmitting}
+            >
+              <View
+                style={tw`flex flex-row items-center gap-2 flex-1 justify-center`}
               >
-                <View
-                  style={tw`flex flex-row items-center gap-2 flex-1 justify-center`}
-                >
-                  {isSubmitting && (
-                    <ActivityIndicator size="small" color="#fff" />
-                  )}
+                {isSubmitting && (
+                  <ActivityIndicator size="small" color="#fff" />
+                )}
 
-                  <Text style={tw`text-white text-lg`}>Continue</Text>
-                </View>
-              </Button>
-              <Text style={tw`font-bold`}>OR</Text>
+                <Text style={tw`text-white text-lg`}>Continue</Text>
+              </View>
+            </Button>
+            <View style={tw`flex flex-col items-center flex-1 gap-2 mt-5`}>
+              <Text>Or continue with your social accounts</Text>
               <Button
                 style="p-2 py-2 mt-2 flex-1 bg-white  rounded-md"
                 textStyle="text-black "

@@ -7,6 +7,7 @@ import RegistrationForm from "../../forms/RegistrationForm";
 import Button from "../../components/Button";
 
 const Registration = () => {
+  
   return (
     <SafeAreaView style={tw`flex flex-1 p-5`}>
       <View style={tw`flex flex-col gap-1 pt-2 flex-1  `}>

@@ -1,4 +1,4 @@
-import { View, Text, ScrollView } from "react-native";
+import { View, Text, ScrollView, Linking } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import tw from "twrnc";
@@ -38,7 +38,7 @@ const More = () => {
       icon: rightIcon,
       component: <Text style={tw`text-lg font-bold`}>Term of Use </Text>,
       onPress: () => {
-        navigation.navigate("Terms");
+        Linking.openURL("https://boof.alicsystems.com/#/terms");
       },
     },
 
@@ -46,7 +46,7 @@ const More = () => {
       icon: rightIcon,
       component: <Text style={tw`text-lg font-bold`}>Privacy & Policy</Text>,
       onPress: () => {
-        navigation.navigate("Privacy");
+        Linking.openURL("https://boof.alicsystems.com/#/privacy");
       },
     },
     {

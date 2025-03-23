@@ -43,7 +43,7 @@ export const signUp = async ({
     Notifier.showNotification({
       title: notification.title,
       description: notification.description,
-      duration: 0,
+      duration: 10,
       Component: NotifierComponents.Alert,
       showAnimationDuration: 800,
       showEasing: Easing.linear,
@@ -74,7 +74,7 @@ export const verifyOTP = async (
     Notifier.showNotification({
       title: "OTP Verification Failed",
       description: error.message,
-      duration: 0,
+      duration: 10,
       Component: NotifierComponents.Alert,
       showAnimationDuration: 800,
       showEasing: Easing.linear,
@@ -87,7 +87,7 @@ export const verifyOTP = async (
     Notifier.showNotification({
       title: "Account Created Successfully",
       description: "You can now login to your account",
-      duration: 0,
+      duration: 10,
       Component: NotifierComponents.Alert,
       showAnimationDuration: 800,
       showEasing: Easing.linear,
@@ -109,7 +109,7 @@ export const handleLogout = async () => {
     Notifier.showNotification({
       title: "Logout Failed",
       description: "Unable to process your request",
-      duration: 0,
+      duration: 10,
       Component: NotifierComponents.Alert,
       showAnimationDuration: 800,
       showEasing: Easing.linear,
@@ -138,7 +138,7 @@ export const handleLogin = async (email: string, password: string) => {
     Notifier.showNotification({
       title: "Login Failed",
       description: error?.message,
-      duration: 0,
+      duration: 10,
       Component: NotifierComponents.Alert,
       showAnimationDuration: 800,
       showEasing: Easing.linear,

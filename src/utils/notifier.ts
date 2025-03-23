@@ -6,6 +6,7 @@ const notifier = (content: string, type: "success" | "error" | "warning") => {
       message: content,
       type: "danger",
       statusBarHeight: 40,
+      
     });
   if (type === "success")
     return showMessage({

@@ -85,7 +85,7 @@ const LoginForm = () => {
               </TouchableWithoutFeedback>
             </View>
             <Button
-              style="py-2  flex-1 rounded-md"
+              style="py-3  flex-1 rounded-md"
               onPress={() => {
                 handleSubmit();
               }}

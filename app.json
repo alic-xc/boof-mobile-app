@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Boof-Assistant",
+    "name": "Legal Boof",
     "slug": "boof-assistant",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -36,7 +36,13 @@
       }
     },
     "plugins": [
-      "expo-sqlite"
+      "expo-sqlite",
+      [
+        "expo-font",
+        {
+          "fonts": ["assets/Montserrat/Montserrat-VariableFont_wght.ttf"]
+        }
+      ]
     ]
   }
 }

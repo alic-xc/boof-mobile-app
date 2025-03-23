@@ -5,7 +5,7 @@ export interface IAppEntity {
   step: "otp" | "none";
   session: Session | null;
   onboarding: boolean;
-  format: "url" | "pdf" | "image" | "default";
+  format: "url" | "pdf" | "text" | "default";
   data: string[];
   url: "";
   analysis: number | null;

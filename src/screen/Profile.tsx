@@ -7,9 +7,19 @@ import { UserIcon } from "../icons";
 import ListItem from "../components/ListItem";
 import { ListItemProps } from "../types/dashboard";
 import { AppEntity } from "../state/app-entity";
+import { getSubscriptionStatus } from "../utils/paywall";
 
 const Profile = () => {
   const { session } = AppEntity.get();
+  const [subscription, setSubscription] = React.useState<any>(null);
+  React.useEffect(() => {
+    getSubscriptionStatus().then((response) => {
+      const sub = response;
+      setSubscription(sub);
+    });
+  }, []);
+
+  console.log(subscription);
 
   const data: (ListItemProps | any)[] = [
     {
@@ -51,8 +61,10 @@ const Profile = () => {
       icon: "",
       component: (
         <View style={tw``}>
-          <Text style={tw`text-sm font-light`}>Total Credit (Monthly)</Text>
-          <Text style={tw`text-lg `}>0</Text>
+          <Text style={tw`text-sm font-light`}>
+            Total Credit ({subscription?.type})
+          </Text>
+          <Text style={tw`text-lg `}>({subscription?.credit_remaining})</Text>
         </View>
       ),
       onPress: () => {},

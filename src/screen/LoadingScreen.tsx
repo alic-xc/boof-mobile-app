@@ -21,9 +21,13 @@ const LoadingScreen = () => {
   const [summaryStatus, setSummaryStatus] = useState<
     "pending" | "loading" | "active" | "error"
   >("pending");
+  const isError =
+    summaryStatus === "error" ||
+    analyseStatus === "error" ||
+    uploadStatus === "error";
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const [pdfText, setPdfText] = React.useState<string>("");
-  const { data, session } = AppEntity.use(); // Assuming data[0] is the PDF URI
+  const { data, session, format } = AppEntity.use(); // Assuming data[0] is the PDF URI
   const token = session?.access_token;
   const country = "US"; // Example; make dynamic based on user input
   const { generateLegalSummary } = useLegalHook();
@@ -94,7 +98,7 @@ const LoadingScreen = () => {
 
     return checkStatus();
   };
-  // Upload PDF to LlamaIndex and extract text
+
   const uploadPdfToLlamaIndex = async () => {
     if (!data || data.length < 1) {
       setUploadStatus("error");
@@ -120,7 +124,6 @@ const LoadingScreen = () => {
           "Content-Type": "multipart/form-data",
         },
         body: formData,
-        
       });
 
       const responseData = await response.json();
@@ -144,64 +147,58 @@ const LoadingScreen = () => {
     }
   };
 
-  // const uploadPdfToLlamaIndex = async () => {
-  //   if (!data || data.length < 1) {
-  //     setUploadStatus("error");
-  //     Alert.alert("Error", "Please select a PDF file first");
-  //     return "";
-  //   }
+  const submitUrl = async () => {
+    try {
+      setUploadStatus("loading");
+      if (!token) throw new Error("User not authenticated");
 
-  //   setUploadStatus("loading");
+      const response = await fetch(`${BASE_URL}/api/legal/extract-from-url`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ url: data[0] }),
+      });
 
-  //   try {
-  //     const formData = new FormData();
-  //     formData.append("file", {
-  //       uri: data[0],
-  //       name: "agreement.pdf",
-  //       type: "application/pdf",
-  //     });
+      const responseData = await response.json();
+      if (!response.ok) {
+        if (response.status === 403)
+          throw new Error("Insufficient credits or no active subscription");
+        throw new Error(responseData.error || "Failed to process URL");
+      }
 
-  //     const response = await fetch(
-  //       "https://api.cloud.llamaindex.ai/api/parsing/upload",
-  //       {
-  //         method: "POST",
-  //         headers: {
-  //           accept: "application/json",
-  //           Authorization: `Bearer ${LLAMA_CLOUD_API_KEY}`,
-  //           "Content-Type": "multipart/form-data",
-  //         },
-  //         body: formData,
-  //       }
-  //     );
-
-  //     const responseData = await response.json();
-  //     if (!response.ok) {
-  //       throw new Error(responseData.message || "Upload failed");
-  //     }
-  //     const jobId = responseData.id; // Assuming job_id is returned
-  //     if (!jobId) throw new Error("No job ID returned");
-
-  //     // Poll for completion
-  //     const markdownText = await pollJobStatus(jobId);
-  //     setPdfText(markdownText);
-  //     setUploadStatus("active");
-  //     return markdownText;
-  //   } catch (error) {
-  //     console.log("error");
-  //     setUploadStatus("error");
-  //     Alert.alert("Upload Error", error.message || "Failed to upload PDF");
-  //     console.error("Upload error:", error);
-  //     return "";
-  //   }
-  // };
+      setPdfText(responseData.text); // Pass to next step (e.g., summary generation)
+      setUploadStatus("active");
+    } catch (error) {
+      Alert.alert("Error", error.message || "Failed to process URL");
+    }
+  };
 
   // Start the process on mount
   useEffect(() => {
-    const processDocument = async () => {
-      const extractedText = await uploadPdfToLlamaIndex();
-    };
+    if (format === "pdf") {
+      const processDocument = async () => {
+        const extractedText = await uploadPdfToLlamaIndex();
+      };
 
-    processDocument();
+      processDocument();
+    }
+    if (format === "url") {
+      const processDocument = async () => {
+        const extractedText = await submitUrl();
+      };
+
+      processDocument();
+    }
+
+    if (format === "text") {
+      const processDocument = async () => {
+        setPdfText(data[0]);
+        setUploadStatus("active");
+      };
+      processDocument();
+    }
   }, [data]);
 
   useEffect(() => {
@@ -214,9 +211,8 @@ const LoadingScreen = () => {
       );
     };
 
-    if (pdfText.length > 1) {
       processDocument();
-    }
+    
   }, [pdfText]);
 
   return (
@@ -229,13 +225,11 @@ const LoadingScreen = () => {
             renderStep(analyseStatus, "Analysing Data")}
           {summaryStatus !== "pending" &&
             renderStep(summaryStatus, "Generating Summary")}
-          {summaryStatus === "error" ||
-            analyseStatus == "error" ||
-            (uploadStatus == "error" && (
-              <Button onPress={() => navigation.goBack()}>
-                <Text>Close</Text>
-              </Button>
-            ))}
+          {isError && (
+            <Button onPress={() => navigation.goBack()}>
+              <Text>Close</Text>
+            </Button>
+          )}
         </View>
       </View>
     </SafeAreaView>
