@@ -18,9 +18,12 @@ import { RootStackParamList } from "../types/navigation-types";
 import { AuthEntity } from "../state/auth-entity";
 import PhoneInput from "../components/PhoneInput";
 import { AppleIcon } from "../icons";
-import { Notifier, Easing, NotifierComponents } from "react-native-notifier";
 import { signUp } from "../utils/superbase";
 import { AppEntity } from "../state/app-entity";
+import CountryPicker, {
+  Country,
+  CountryCode,
+} from "react-native-country-picker-modal";
 
 const RegistrationForm = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -30,7 +33,7 @@ const RegistrationForm = () => {
       initialValues={{
         fullName: "",
         email: "",
-        business: "",
+        country: "",
         password: "",
       }}
       validationSchema={UserSchema}
@@ -40,7 +43,7 @@ const RegistrationForm = () => {
           const data = {
             fullName: values.fullName,
             email: values.email,
-            business: values.business,
+            country: values.country,
             password: values.password,
           };
           const response = signUp(data);
@@ -99,20 +102,39 @@ const RegistrationForm = () => {
                 style="border-0 bg-gray-200"
                 containerStyle="h-[45px]"
               />
-
-              <TextInput
-                name="business"
-                title="Business Name"
-                placeholder="Enter Business Name"
-                style="border-0 bg-gray-200"
-                containerStyle="h-[45px]"
-              />
+              <View style={tw`h-[45px]`}>
+                <AppText style={tw`text-gray-700 mb-1`}>Country</AppText>
+                <CountryPicker
+                  withFlag
+                  withFilter
+                  withCountryNameButton
+                  withEmoji
+                  withFlagButton
+                  countryCode={(values.country as CountryCode) || "NG"} // Default to Nigeria
+                  onSelect={(country: Country) => {
+                    setFieldValue("country", country.cca2); // Set country code (e.g., "NG")
+                    setFieldTouched("country", true);
+                  }}
+                  containerButtonStyle={tw`bg-gray-200 h-10 rounded-md px-3 flex-row items-center`}
+                  theme={{
+                    backgroundColor: "#e5e7eb", // Matches bg-gray-200
+                    onBackgroundTextColor: "#000",
+                    primaryColor: "#000",
+                  }}
+                />
+                {touched.country && errors.country && (
+                  <AppText style={tw`text-red-500 text-sm`}>
+                    {errors.country}
+                  </AppText>
+                )}
+              </View>
               <TextInput
                 name="password"
                 title="Password"
                 placeholder="Password"
                 style="border-0 bg-gray-200"
                 containerStyle="h-[45px]"
+                isPassword={true}
               />
             </View>
             <Button
@@ -129,11 +151,11 @@ const RegistrationForm = () => {
                   <ActivityIndicator size="small" color="#fff" />
                 )}
 
-                <Text style={tw`text-white text-lg`}>Continue</Text>
+                <AppText style={tw`text-white text-lg`}>Continue</AppText>
               </View>
             </Button>
-            <View style={tw`flex flex-col items-center flex-1 gap-2 mt-5`}>
-              <Text>Or continue with your social accounts</Text>
+            {/* <View style={tw`flex flex-col items-center flex-1 gap-2 mt-5`}>
+              <AppText>Or continue with your social accounts</AppText>
               <Button
                 style="p-2 py-2 mt-2 flex-1 bg-white  rounded-md"
                 textStyle="text-black "
@@ -141,10 +163,10 @@ const RegistrationForm = () => {
               >
                 <View style={tw`flex flex-row items-center justify-center`}>
                   <AppleIcon color="black" width={24} height={24} />
-                  <Text style={tw``}> Continue with Apple</Text>
+                  <AppText style={tw``}> Continue with Apple</AppText>
                 </View>
               </Button>
-            </View>
+            </View> */}
 
             <TouchableWithoutFeedback
               onPress={() => {
@@ -152,9 +174,9 @@ const RegistrationForm = () => {
               }}
               style={tw`text-center`}
             >
-              <Text style={tw`text-center mt-5 text-lg underline`}>
+              <AppText style={tw`text-center mt-5 text-lg underline`}>
                 Sign in with your account
-              </Text>
+              </AppText>
             </TouchableWithoutFeedback>
           </ScrollView>
         </KeyboardAvoidingView>

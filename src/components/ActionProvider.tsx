@@ -4,10 +4,9 @@ import ListItem from "../components/ListItem";
 import { ListTextItem } from "../components/ListTextItem";
 import tw from "twrnc";
 import { CancelIcon, EditIcon, EyeIcon } from "../icons";
-import { FormEntity } from "../state/app-entity";
 import { NavigationProp } from "@react-navigation/native";
 import { RootStackParamList } from "../types/navigation-types";
-
+import AppText from "./AppText";
 interface IActionProviderProps {
   navigation?: NavigationProp<RootStackParamList>;
   handleDelete?: () => void;
@@ -18,7 +17,7 @@ interface IActionProviderProps {
 const ActionProvider = (props: IActionProviderProps) => {
   return (
     <View style={tw`flex flex-col gap-2 flex-1`}>
-      <Text style={tw`text-2xl font-semibold mb-3`}>Quick Actions</Text>
+      <AppText style={tw`text-2xl font-semibold mb-3`}>Quick Actions</AppText>
       <ListItem
         containerStyle="bg-[#f1f1f1]"
         title="View Details"

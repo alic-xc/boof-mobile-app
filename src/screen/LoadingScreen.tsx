@@ -9,6 +9,7 @@ import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../types/navigation-types";
 import useLegalHook from "../hooks/useLegalHook";
 import { BASE_URL } from "../utils/constants";
+import AppText from "../components/AppText";
 
 const LoadingScreen = () => {
   // State for each step with four phases
@@ -44,15 +45,17 @@ const LoadingScreen = () => {
         style={tw`flex flex-row gap-2 items-center justify-center bg-[black] rounded-md`}
       >
         {isLoading && <ActivityIndicator size="small" color="white" />}
-        {isActive && <Text style={tw`text-green-500 text-lg py-2`}>✓</Text>}
-        {isError && <Text style={tw`text-red-500 text-lg py-2`}>✗</Text>}
-        <Text
+        {isActive && (
+          <AppText style={tw`text-green-500 text-lg py-2`}>✓</AppText>
+        )}
+        {isError && <AppText style={tw`text-red-500 text-lg py-2`}>✗</AppText>}
+        <AppText
           style={tw`text-lg py-1 text-white ${
             isActive ? "text-green-500" : isError ? "text-red-500" : ""
           }`}
         >
           {isActive ? `${text} - Done` : isError ? `${text} - Failed` : text}
-        </Text>
+        </AppText>
       </Animated.View>
     );
   };
@@ -211,8 +214,7 @@ const LoadingScreen = () => {
       );
     };
 
-      processDocument();
-    
+    processDocument();
   }, [pdfText]);
 
   return (
@@ -227,7 +229,7 @@ const LoadingScreen = () => {
             renderStep(summaryStatus, "Generating Summary")}
           {isError && (
             <Button onPress={() => navigation.goBack()}>
-              <Text>Close</Text>
+              <AppText>Close</AppText>
             </Button>
           )}
         </View>

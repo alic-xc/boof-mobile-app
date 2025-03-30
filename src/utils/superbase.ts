@@ -2,7 +2,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createClient } from "@supabase/supabase-js";
 import { Easing, Notifier, NotifierComponents } from "react-native-notifier";
 import { IUser } from "../types/app-types";
-import { verify } from "crypto";
 
 const SUPABASE_URL = "https://uhmhzwiazeikhycbybnf.supabase.co";
 const SUPABASE_ANON_KEY =
@@ -21,13 +20,13 @@ export const signUp = async ({
   email,
   password,
   fullName,
-  business,
+  country,
 }: IUser) => {
   const data = await supabase.auth.signUp({
     email,
     password,
     options: {
-      data: { full_name: fullName, business: business },
+      data: { full_name: fullName, country: country },
     },
   });
   const notification = { title: "", description: "", type: "" };

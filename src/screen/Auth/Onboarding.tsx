@@ -2,7 +2,7 @@ import {
   Animated,
   View,
   Text,
-  ImageBackground,
+  Image,
   StatusBar,
   Pressable,
   ImageSourcePropType,
@@ -15,6 +15,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import colors from "../../constant/Color";
 import JudgeIcon from "../../icons/JudgeIcon";
 import ContractIcon from "../../icons/ContractIcon";
+import { TermsIcon } from "../../icons";
+import { MonFont } from "../../utils/constants";
+import AppText from "../../components/AppText";
 
 interface PageProps {
   id: number;
@@ -31,7 +34,7 @@ const Onboarding = ({ navigation }) => {
   const [currentFinanceText, setCurrentFinanceText] = useState(0);
   const financeTextAnim = React.useRef(new Animated.Value(0)).current;
   const financeTexts = ["budget", "wealth", "savings", "investments"];
-  const IconComponents = [JudgeIcon, ContractIcon];
+  const IconComponents = [JudgeIcon, ContractIcon, TermsIcon];
 
   const textFadeAnim = React.useRef(new Animated.Value(1)).current;
   const translateAnim = React.useRef(new Animated.Value(0)).current;
@@ -98,7 +101,7 @@ const Onboarding = ({ navigation }) => {
             useNativeDriver: true,
           }).start(() => {
             // Move to next icon
-            setCurrentIcon((prev) => (prev + 1) % 2);
+            setCurrentIcon((prev) => (prev + 1) % 3);
           });
         }, 1500);
       });
@@ -120,9 +123,14 @@ const Onboarding = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={[tw`flex flex-col justify-between flex-1 pt-5 grow`]}>
-      <View style={tw`flex flex-row`}>
-        <Text style={tw`text-2xl px-2 font-light`}>LegalBoof</Text>
+    <SafeAreaView
+      style={[tw`flex flex-col bg-white justify-between flex-1 pt-5 grow `]}
+    >
+      <View style={tw`flex flex-row mx-2`}>
+        <Image
+          source={require("../../../assets/icon.png")}
+          style={tw`w-10 h-10 rounded-full`}
+        />
       </View>
       <View style={tw`flex flex-row justify-center mt-10`}>
         <Animated.View style={iconAnimStyle}>
@@ -132,17 +140,17 @@ const Onboarding = ({ navigation }) => {
           })}
         </Animated.View>
       </View>
-      <View style={tw`bg-white rounded-5 h-60 m-2 `}>
+      <View style={tw`bg-white rounded-5 h-60 m-2 bg-[#f1f1f1]`}>
         <View
           style={tw`flex flex-1 flex-col justify-between gap-2 px-4 pb-10 pt-15`}
         >
           <View>
-            <Text style={tw`text-center text-3xl font-bold`}>
-              Join the Club
-            </Text>
-            <Text style={tw`text-center text-lg font-semibold mt-1`}>
-              Your legal assistant is here.
-            </Text>
+            <AppText style={[tw`text-center text-3xl font-bold`]}>
+              Review Contracts Fast
+            </AppText>
+            <AppText style={[tw`text-center text-lg font-semibold mt-1`]}>
+              Spot Issues Quick
+            </AppText>
           </View>
           <Button
             style="py-2 mt-2 h-13 rounded-4xl"
@@ -151,7 +159,7 @@ const Onboarding = ({ navigation }) => {
             <View
               style={tw`flex flex-row items-center gap-2 flex-1 justify-center`}
             >
-              <Text style={tw`text-white text-lg`}>Get Started</Text>
+              <AppText style={tw`text-white text-lg`}>Get Started</AppText>
             </View>
           </Button>
         </View>

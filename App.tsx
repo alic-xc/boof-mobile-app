@@ -8,7 +8,7 @@ import Dashboard from "./src/screen/Dashboard";
 import Settings from "./src/screen/Settings";
 import { AboutUsScreen } from "./src/screen/About";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { ActivityIndicator, AppState, View } from "react-native";
+import { ActivityIndicator, AppState, View, Text } from "react-native";
 import { AppEntity } from "./src/state/app-entity";
 import Payment from "./src/screen/Payment";
 import {
@@ -30,10 +30,16 @@ import Profile from "./src/screen/Profile";
 import SubscriptionQuiz from "./src/screen/Auth/SubscriptionQuiz";
 import { adapty } from "react-native-adapty";
 import { HAS_SEEN_ONBOARDING } from "./src/utils/constants";
+import {
+  useFonts,
+  Montserrat_400Regular,
+  Montserrat_500Medium,
+  Montserrat_600SemiBold,
+  Montserrat_700Bold,
+} from "@expo-google-fonts/montserrat";
 
 adapty.activate("public_live_Oj95PwKo.2TszD3zYdnpxMae3bwBm");
 
-// Function to check if user has seen onboarding
 const checkOnboardingStatus = async () => {
   try {
     const hasSeenOnboarding = await AsyncStorage.getItem(HAS_SEEN_ONBOARDING);
@@ -50,6 +56,13 @@ const Tab = createBottomTabNavigator();
 export default function App() {
   const { onboarding, session } = AppEntity.use();
   const [isLoading, setIsLoading] = React.useState(true);
+
+  let [fontsLoaded] = useFonts({
+    Montserrat_400Regular,
+    Montserrat_500Medium,
+    Montserrat_600SemiBold,
+    Montserrat_700Bold,
+  });
 
   React.useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -86,10 +99,10 @@ export default function App() {
     });
   }, []);
 
-  if (isLoading) {
+  if (isLoading || !fontsLoaded) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator />;
+        <ActivityIndicator />
       </View>
     );
   }

@@ -51,6 +51,8 @@ import {
 import { TextInputSchema, UrlSchema } from "../schema/Dashboard";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { HAS_SEEN_ONBOARDING } from "../utils/constants";
+import { adapty } from "react-native-adapty";
+import AppText from "../components/AppText";
 
 const HAS_SHOWN_RATING_KEY = "hasShownRating";
 const HAS_CONVERTED_PDF_KEY = "hasConvertedPDF";
@@ -84,8 +86,8 @@ const Dashboard = () => {
     {
       component: (
         <View style={tw``}>
-          <Text style={tw`text-xl`}>Upload Document</Text>
-          <Text style={tw`text-sm mt-1 `}>Upload document in PDF</Text>
+          <AppText style={tw`text-xl`}>Upload Document</AppText>
+          <AppText style={tw`text-sm mt-1 `}>Upload document in PDF</AppText>
         </View>
       ),
       containerStyle: "bg-[#f1f1f1]",
@@ -98,10 +100,10 @@ const Dashboard = () => {
     // {
     //   component: (
     //     <View style={tw``}>
-    //       <Text style={tw`text-xl`}>Scan Document</Text>
-    //       <Text style={tw`text-sm mt-1 `}>
+    //       <AppText style={tw`text-xl`}>Scan Document</AppText>
+    //       <AppText style={tw`text-sm mt-1 `}>
     //         You can scan Document in Image format
-    //       </Text>
+    //       </AppText>
     //     </View>
     //   ),
     //   containerStyle: "bg-[#f1f1f1]",
@@ -113,8 +115,8 @@ const Dashboard = () => {
     {
       component: (
         <View style={tw``}>
-          <Text style={tw`text-xl`}>Enter Text</Text>
-          <Text style={tw`text-sm mt-1 `}>Insert link to agreement</Text>
+          <AppText style={tw`text-xl`}>Enter Text</AppText>
+          <AppText style={tw`text-sm mt-1 `}>Insert agreement text</AppText>
         </View>
       ),
       containerStyle: "bg-[#f1f1f1]",
@@ -123,19 +125,19 @@ const Dashboard = () => {
       },
       icon: <TextIcon color={colors.primary} width={30} height={30} />,
     },
-    {
-      component: (
-        <View style={tw``}>
-          <Text style={tw`text-xl`}>Enter URL</Text>
-          <Text style={tw`text-sm mt-1 `}>Insert link to agreement</Text>
-        </View>
-      ),
-      containerStyle: "bg-[#f1f1f1]",
-      onPress: () => {
-        setUrlModalVisible(true);
-      },
-      icon: <LinkIcon color={colors.primary} width={30} height={30} />,
-    },
+    // {
+    //   component: (
+    //     <View style={tw``}>
+    //       <AppText style={tw`text-xl`}>Enter URL</AppText>
+    //       <AppText style={tw`text-sm mt-1 `}>Insert link to agreement</AppText>
+    //     </View>
+    //   ),
+    //   containerStyle: "bg-[#f1f1f1]",
+    //   onPress: () => {
+    //     setUrlModalVisible(true);
+    //   },
+    //   icon: <LinkIcon color={colors.primary} width={30} height={30} />,
+    // },
   ];
 
   React.useEffect(() => {
@@ -143,16 +145,27 @@ const Dashboard = () => {
   }, []);
 
   React.useEffect(() => {
-    getSubscriptionStatus().then((response) => {
-      const sub = response;
-      if (!sub.isActive) {
-        syncSubscriptionWithServer();
+    const checkInitialStatus = async () => {
+      const sub = await getSubscriptionStatus();
+      if (
+        !sub.isActive ||
+        (sub.isTrial && new Date(sub.expiryDate) < new Date())
+      ) {
+        await syncSubscriptionWithServer();
       }
-    });
+    };
+    checkInitialStatus();
+
+    const listener = adapty.addEventListener(
+      "onLatestProfileLoad",
+      async (profile) => {
+        await syncSubscriptionWithServer();
+      }
+    );
+    return () => listener.remove();
   }, []);
 
   const onRefresh = React.useCallback(async () => {
-
     setRefreshing(true);
     await getAllLegalDocs();
     setRefreshing(false);
@@ -243,51 +256,57 @@ const Dashboard = () => {
     {
       title: (
         <View>
-          <Text style={tw`text-lg font-bold`}>Total </Text>
-          <Text> Docs</Text>
+          <AppText style={tw`text-lg font-bold`}>Total </AppText>
+          <AppText> Docs</AppText>
         </View>
       ),
       icon: (
-        <Text style={tw`font-bold text-lg`}>{analytics?.totalReports}</Text>
+        <AppText style={tw`font-bold text-lg`}>
+          {analytics?.totalReports}
+        </AppText>
       ),
     },
     {
       title: (
         <View>
-          <Text style={tw`text-lg font-bold text-green-500`}>Low </Text>
-          <Text>Risk Docs</Text>
+          <AppText style={tw`text-lg font-bold text-green-500`}>Low </AppText>
+          <AppText>Risk Docs</AppText>
         </View>
       ),
       icon: (
-        <Text style={tw`font-bold text-lg`}>{analytics?.lowRiskDocuments}</Text>
+        <AppText style={tw`font-bold text-lg`}>
+          {analytics?.lowRiskDocuments}
+        </AppText>
       ),
     },
     {
       title: (
         <View>
-          <Text style={tw`text-lg font-bold text-red-500`}>High </Text>
-          <Text>Risk Docs</Text>
+          <AppText style={tw`text-lg font-bold text-red-500`}>High </AppText>
+          <AppText>Risk Docs</AppText>
         </View>
       ),
       total: analytics?.highRiskDocuments,
       icon: (
-        <Text style={tw`font-bold text-lg`}>
+        <AppText style={tw`font-bold text-lg`}>
           {analytics?.highRiskDocuments}
-        </Text>
+        </AppText>
       ),
     },
 
     {
       title: (
         <View>
-          <Text style={tw`text-lg font-bold text-yellow-600`}>Medium </Text>
-          <Text>Risk Docs</Text>
+          <AppText style={tw`text-lg font-bold text-yellow-600`}>
+            Medium{" "}
+          </AppText>
+          <AppText>Risk Docs</AppText>
         </View>
       ),
       icon: (
-        <Text style={tw`font-bold text-lg`}>
+        <AppText style={tw`font-bold text-lg`}>
           {analytics?.mediumRiskDocuments}
-        </Text>
+        </AppText>
       ),
     },
   ];
@@ -308,16 +327,16 @@ const Dashboard = () => {
           </View>
           <View style={tw`flex flex-1 bg-white rounded-md p-2 mt-2`}>
             <View style={tw`grow`}>
-              <Text style={tw`text-xl font-light `}>Recent Reports</Text>
+              <AppText style={tw`text-xl font-light `}>Recent Reports</AppText>
               <View style={tw`flex grow bg-white py-2`}>
                 {allLegalDocs.length < 1 && (
                   <View
                     style={tw`flex flex-col flex-1 justify-center items-center`}
                   >
                     <NoteBookIcon width={40} height={40} color="#1e2424" />
-                    <Text style={tw`font-semibold text-xl text-center`}>
+                    <AppText style={tw`font-semibold text-xl text-center`}>
                       No Reports Yet.
-                    </Text>
+                    </AppText>
                   </View>
                 )}
                 {allLegalDocs.length > 0 && (
@@ -343,12 +362,12 @@ const Dashboard = () => {
                         }}
                       >
                         <View style={tw`flex w-full`}>
-                          <Text style={tw`text-xl font-light`}>
+                          <AppText style={tw`text-xl font-light`}>
                             {item.title}
-                          </Text>
-                          <Text style={tw`font-semibold`}>
+                          </AppText>
+                          <AppText style={tw`font-semibold`}>
                             {formatDateOnly(item.date_created)}
-                          </Text>
+                          </AppText>
                         </View>
                       </Pressable>
                     )}
@@ -373,7 +392,7 @@ const Dashboard = () => {
             closeModal={() => setModalVisible(false)}
           >
             <View style={tw`flex flex-col gap-2 flex-1 px-4 py-2`}>
-              <Text style={tw`text-2xl  mb-3`}>Quick Actions</Text>
+              <AppText style={tw`text-2xl  mb-3`}>Quick Actions</AppText>
 
               {actions.map((item, index) => (
                 <ListItem
@@ -394,7 +413,7 @@ const Dashboard = () => {
             closeModal={() => setTextModalVisible(false)}
           >
             <View style={tw`flex flex-col gap-2 flex-1 px-4 py-2`}>
-              <Text style={tw`text-2xl  mb-3`}>Quick Actions</Text>
+              <AppText style={tw`text-2xl  mb-3`}>Quick Actions</AppText>
 
               <Formik
                 initialValues={{ text: "" }}
@@ -431,9 +450,9 @@ const Dashboard = () => {
                       onBlur={handleBlur("text")}
                     />
                     {touched.text && errors.text && (
-                      <Text style={tw`text-red-500 text-sm`}>
+                      <AppText style={tw`text-red-500 text-sm`}>
                         {errors.text}
-                      </Text>
+                      </AppText>
                     )}
                     <Button
                       style="mt-2 rounded-lg"
@@ -446,7 +465,9 @@ const Dashboard = () => {
                         {isSubmitting && (
                           <ActivityIndicator size="small" color="#fff" />
                         )}
-                        <Text style={tw`text-white text-lg`}>Submit Text</Text>
+                        <AppText style={tw`text-white text-lg`}>
+                          Submit Text
+                        </AppText>
                       </View>
                     </Button>
                   </View>
@@ -462,7 +483,7 @@ const Dashboard = () => {
             closeModal={() => setUrlModalVisible(false)}
           >
             <View style={tw`flex flex-col gap-2 flex-1 px-4 py-2`}>
-              <Text style={tw`text-2xl  mb-3`}>Quick Actions</Text>
+              <AppText style={tw`text-2xl  mb-3`}>Quick Actions</AppText>
               <Formik
                 initialValues={{ url: "" }}
                 validationSchema={UrlSchema}
@@ -496,7 +517,9 @@ const Dashboard = () => {
                       onBlur={handleBlur("url")}
                     />
                     {touched.url && errors.url && (
-                      <Text style={tw`text-red-500 text-sm`}>{errors.url}</Text>
+                      <AppText style={tw`text-red-500 text-sm`}>
+                        {errors.url}
+                      </AppText>
                     )}
                     <Button
                       style="mt-2 rounded-lg"
@@ -509,7 +532,9 @@ const Dashboard = () => {
                         {isSubmitting && (
                           <ActivityIndicator size="small" color="#fff" />
                         )}
-                        <Text style={tw`text-white text-lg`}>Submit URL</Text>
+                        <AppText style={tw`text-white text-lg`}>
+                          Submit URL
+                        </AppText>
                       </View>
                     </Button>
                   </View>

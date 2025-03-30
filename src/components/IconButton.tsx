@@ -2,6 +2,7 @@ import { View, Text, Pressable } from "react-native";
 import React from "react";
 import tw from "twrnc";
 import AddIcon from "../icons/AddIcon";
+import AppText from "./AppText";
 
 interface IIconButton {
   onPress?: () => void;
@@ -25,7 +26,7 @@ const IconButton = (props: IIconButton) => {
           <AddIcon width={30} height={30} color={"white"} />
         )}
       </View>
-      <Text style={tw`font-semibold`}> {props.title}</Text>
+      <AppText style={tw`font-semibold`}> {props.title}</AppText>
     </Pressable>
   );
 };

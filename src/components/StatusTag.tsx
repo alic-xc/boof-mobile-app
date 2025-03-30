@@ -2,6 +2,7 @@
 import React from "react";
 import { View, Text, ViewStyle, TextStyle } from "react-native";
 import tw from "twrnc";
+import AppText from "./AppText";
 
 type TagVariant = "success" | "error" | "warning" | "info";
 
@@ -58,9 +59,11 @@ const StatusTag: React.FC<TagProps> = ({
       ]}
     >
       <View style={tw`w-1.5 h-1.5 rounded-full mr-2 ${variantStyles.dot}`} />
-      <Text style={[tw`text-sm font-medium ${variantStyles.text}`, textStyle]}>
+      <AppText
+        style={[tw`text-sm font-medium ${variantStyles.text}`, textStyle]}
+      >
         {text}
-      </Text>
+      </AppText>
     </View>
   );
 };

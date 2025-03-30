@@ -57,12 +57,7 @@ const ResetPassword = () => {
               <TextInput name="password" placeholder="Enter Password" />
               <TextInput name="password" placeholder="Enter Password" />
             </View>
-            <Button
-              onPress={() => {
-              }}
-            >
-              Change Password
-            </Button>
+            <Button onPress={() => {}}>Change Password</Button>
           </ScrollView>
         </KeyboardAvoidingView>
       )}

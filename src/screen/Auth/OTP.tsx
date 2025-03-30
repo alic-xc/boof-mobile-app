@@ -15,9 +15,11 @@ import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../../types/navigation-types";
 import { AppEntity } from "../../state/app-entity";
 import { verifyOTP } from "../../utils/superbase";
+import AppText from "../../components/AppText";
 
 const OTP = () => {
   const { step, email } = AppEntity.use();
+  const [otpText, setOtpText] = React.useState<string>("");
   const [loading, setLoading] = React.useState<boolean>(false);
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
@@ -43,16 +45,17 @@ const OTP = () => {
     <SafeAreaView style={tw`flex flex-1 p-3`}>
       <Header title="OTP" />
       <View style={tw`flex flex-col gap-3 pt-5 flex-1`}>
-        <Text style={tw`text-2xl font-bold`}>OTP Verification</Text>
-        <Text style={tw`text-lg`}>
-          Kindly verify OTP sent to <Text style={tw`font-bold`}>{email}</Text>
-        </Text>
+        <AppText style={tw`text-2xl font-bold`}>OTP Verification</AppText>
+        <AppText style={tw`text-lg`}>
+          Kindly verify OTP sent to{" "}
+          <AppText style={tw`font-bold`}>{email}</AppText>
+        </AppText>
         <View style={tw`flex flex-col justify-between flex-1 pb-10`}>
           <View>
             <OtpInput
               numberOfDigits={6}
               onTextChange={(text) => {
-                // setOTP(text)
+                setOtpText(text);
                 if (text.length === 6) {
                   Keyboard.dismiss();
                   onSubmitHanlder(text);
@@ -65,24 +68,10 @@ const OTP = () => {
               }}
             />
             <TouchableWithoutFeedback>
-              <Text style={tw`mt-5`}>Resend OTP after 30 seconds</Text>
+              <AppText style={tw`mt-5`}>Resend OTP after 30 seconds</AppText>
             </TouchableWithoutFeedback>
+            {loading && <ActivityIndicator size="small" color="#fff" />}
           </View>
-          {/* <Button
-            style="py-2 mt-2 rounded-md"
-            isDisabled={OTP.length < 6}
-            onPress={() => {
-              
-            }}
-          >
-            <View
-              style={tw`flex flex-row items-center gap-2 flex-1 justify-center`}
-            >
-              {loading && <ActivityIndicator size="small" color="#fff" />}
-
-              <Text style={tw`text-white text-lg`}>Continue</Text>
-            </View>
-          </Button> */}
         </View>
       </View>
     </SafeAreaView>

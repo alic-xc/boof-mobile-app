@@ -20,6 +20,7 @@ import {
 import { DrawerActions, useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../types/navigation-types";
 import { AppEntity } from "../state/app-entity";
+import AppText from "./AppText";
 
 interface IDashboardAnalytics {
   isDisabledSearch?: boolean;
@@ -37,9 +38,9 @@ const HeaderWidget = ({ title, goBack }: IDashboardAnalytics) => {
         <View style={tw`flex flex-row gap-2 justify-start items-center`}>
           <UserIcon width={50} height={50} color="#1e2424" />
           <View style={tw`flex flex-row gap-3 justify-start items-center`}>
-            <Text style={tw`text-lg  text-[#1e2424] font-bold`}>
+            <AppText style={tw`text-lg  text-[#1e2424] font-bold`}>
               {!title ? `Hi, ${session?.user.user_metadata.full_name}` : title}
-            </Text>
+            </AppText>
           </View>
         </View>
         {/* <NotificationIcon width={25} height={25} color="#1e2424" /> */}

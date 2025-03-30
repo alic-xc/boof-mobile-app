@@ -21,7 +21,7 @@ interface SubscriptionStatus {
 }
 
 // Fetch subscription status from server
-export const getSubscriptionStatus = async (): Promise<SubscriptionStatus> => {
+export const getSubscriptionStatus = async () => {
   try {
     const { session } = AppEntity.get();
     const token = session?.access_token;
@@ -30,7 +30,6 @@ export const getSubscriptionStatus = async (): Promise<SubscriptionStatus> => {
       return { type: "none", isActive: false };
     }
     const url = BASE_URL + "/api/user/subscription";
-
     const response = await fetch(url, {
       method: "GET",
       headers: {
@@ -38,11 +37,8 @@ export const getSubscriptionStatus = async (): Promise<SubscriptionStatus> => {
         "Content-Type": "application/json",
       },
     });
-
     if (!response.ok) throw new Error("Failed to fetch subscription status");
-
     const data = await response.json();
-    console.log(data);
     return {
       credit_remaining: data.credits_remaining,
       type:
@@ -65,7 +61,6 @@ export const getSubscriptionStatus = async (): Promise<SubscriptionStatus> => {
   }
 };
 
-// Sync subscription with server (for logged-in users with existing Adapty purchases)
 export const syncSubscriptionWithServer = async () => {
   try {
     const { session } = AppEntity.get();
@@ -74,26 +69,26 @@ export const syncSubscriptionWithServer = async () => {
 
     const profile = await adapty.getProfile();
     await adapty.identify(profile.profileId);
-    // Find the active access level
     const activeAccessLevel = Object.values(profile?.accessLevels).find(
       (level: any) => level.isActive
     );
 
     if (!activeAccessLevel) {
       console.log("No active subscription to sync");
-      subscriber();
       return;
     }
 
     const isSubscribed = activeAccessLevel.isActive || false;
-    const isTrial = activeAccessLevel.isInGracePeriod || false;
+    const isTrial =
+      activeAccessLevel.isLifetime === false &&
+      activeAccessLevel.isInTrialPeriod === true;
     const productId = activeAccessLevel.vendorProductId;
 
     if (!isSubscribed || !productId) {
       console.log("No active subscription to sync");
       return;
     }
-    const purchaseType = productId.split(".").pop().toLowerCase();
+
     const url = BASE_URL + "/api/user/verify-subscription";
     const response = await fetch(url, {
       method: "POST",
@@ -103,11 +98,9 @@ export const syncSubscriptionWithServer = async () => {
       },
       body: JSON.stringify({
         adapty_profile_id: profile.profileId,
-        purchase_type: purchaseType,
         is_trial: isTrial,
       }),
     });
-    console.log("RESPONSE", response);
     if (!response.ok) {
       const errorText = await response.text();
       throw new Error(`Failed to sync subscription with server: ${errorText}`);
@@ -115,79 +108,163 @@ export const syncSubscriptionWithServer = async () => {
 
     console.log("Subscription synced successfully");
   } catch (error) {
-    console.log();
     console.error("Failed to sync subscription:", error);
   }
 };
-
 // Trigger paywall (to be called from dashboard)
-export const subscriber = async () => {
-  try {
-    const placementId = "boof";
-    const paywall = await adapty.getPaywall(placementId, "EN");
-    if (paywall.hasViewConfiguration) {
-      const view = await createPaywallView(paywall);
-      view.registerEventHandlers({
-        onPurchaseStarted: async (product) => {
-          try {
-            const payment = await adapty.makePurchase(product, {});
-            if (payment) {
-              console.log(
-                "Purchase Successful",
-                "Thank you for your purchase!"
-              );
-              const { session } = AppEntity.get();
-              const token = session?.access_token;
-              if (token) {
-                // If user is logged in, notify server immediately
-                const profile = await adapty.getProfile();
-                await adapty.identify(profile.profileId);
-                profile.profileId;
+// export const subscriber = async () => {
+//   try {
+//     const placementId = "boof";
+//     const paywall = await adapty.getPaywall(placementId, "EN");
+//     if (paywall.hasViewConfiguration) {
+//       const view = await createPaywallView(paywall);
+//       view.registerEventHandlers({
+//         onPurchaseStarted: async (product) => {
+//           try {
+//             const payment = await adapty.makePurchase(product, {});
+//             if (payment) {
+//               console.log(
+//                 "Purchase Successful",
+//                 "Thank you for your purchase!"
+//               );
+//               const { session } = AppEntity.get();
+//               const token = session?.access_token;
+//               if (token) {
+//                 // If user is logged in, notify server immediately
+//                 const profile = await adapty.getProfile();
+//                 await adapty.identify(profile.profileId);
+//                 profile.profileId;
 
-                const activeAccessLevel = Object.values(
-                  profile?.accessLevels
-                ).find((level: any) => level.isActive);
-                const isTrial = activeAccessLevel.isInGracePeriod || false;
-                const productId = activeAccessLevel.vendorProductId;
-                await notifyServer(profile.profileId, isTrial);
-              } else {
-                // If not logged in, sync will happen later
+//                 const activeAccessLevel = Object.values(
+//                   profile?.accessLevels
+//                 ).find((level: any) => level.isActive);
+//                 const isTrial = activeAccessLevel.isInGracePeriod || false;
+//                 const productId = activeAccessLevel.vendorProductId;
+//                 await notifyServer(profile.profileId, isTrial);
+//               } else {
+//                 // If not logged in, sync will happen later
+//                 console.log(
+//                   "User not logged in, subscription will sync on login"
+//                 );
+//               }
+//               const result = await getSubscriptionStatus();
+//               if (result.isActive) view.dismiss();
+//             }
+//           } catch (error) {
+//             if (
+//               error instanceof AdaptyError &&
+//               error.adaptyCode === getErrorCode(ErrorCode["2"])
+//             ) {
+//               // Payment cancelled
+//             } else {
+//               console.error("Purchase error:", error);
+//             }
+//           }
+//         },
+//         onRestoreCompleted: async () => {
+//           const result = await getSubscriptionStatus();
+//           if (result.isActive) {
+//             console.log(
+//               "Purchase Restored",
+//               "Your previous purchases have been restored successfully."
+//             );
+//           } else {
+//             console.log("No active subscription found after restore");
+//           }
+//         },
+//       });
+//       await view.present();
+//     }
+//   } catch (error) {
+//     Alert.alert("Error", "Failed to load paywall. Please try again.");
+//     console.error("Paywall error:", error);
+//   }
+// };
+
+export const subscriber = async () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const placementId = "boof";
+      const paywall = await adapty.getPaywall(placementId, "EN");
+
+      if (paywall.hasViewConfiguration) {
+        const view = await createPaywallView(paywall);
+
+        view.registerEventHandlers({
+          onPurchaseStarted: async (product) => {
+            try {
+              const payment = await adapty.makePurchase(product, {});
+              if (payment) {
                 console.log(
-                  "User not logged in, subscription will sync on login"
+                  "Purchase Successful",
+                  "Thank you for your purchase!"
                 );
+
+                const { session } = AppEntity.get();
+                const token = session?.access_token;
+
+                if (token) {
+                  // If user is logged in, notify the server immediately
+                  const profile = await adapty.getProfile();
+                  await adapty.identify(profile.profileId);
+
+                  const activeAccessLevel = Object.values(
+                    profile?.accessLevels
+                  ).find((level) => level.isActive);
+
+                  const isTrial = activeAccessLevel.isInGracePeriod || false;
+                  await notifyServer(profile.profileId, isTrial);
+                } else {
+                  console.log(
+                    "User not logged in, subscription will sync on login"
+                  );
+                }
+                const result = await getSubscriptionStatus();
+                if (result.isActive) {
+                  view.dismiss();
+                  // ✅ Resolve only if payment is successful
+                }
+                resolve(true);
               }
-              const result = await getSubscriptionStatus();
-              if (result.isActive) view.dismiss();
+            } catch (error) {
+              if (
+                error instanceof AdaptyError &&
+                error.adaptyCode === getErrorCode(ErrorCode["2"])
+              ) {
+                console.log("Payment cancelled by user");
+                resolve(false); // ✅ Resolve, but indicate failure
+              } else {
+                console.error("Purchase error:", error);
+                resolve(false); // ❌ Reject on other errors
+              }
             }
-          } catch (error) {
-            if (
-              error instanceof AdaptyError &&
-              error.adaptyCode === getErrorCode(ErrorCode["2"])
-            ) {
-              // Payment cancelled
+          },
+          onRestoreCompleted: async () => {
+            const result = await getSubscriptionStatus();
+            if (result.isActive) {
+              console.log(
+                "Purchase Restored",
+                "Your purchases have been restored."
+              );
+              resolve(true); // ✅ Resolve after restoration
             } else {
-              console.error("Purchase error:", error);
+              console.log("No active subscription found after restore");
+              resolve(false);
             }
-          }
-        },
-        onRestoreCompleted: async () => {
-          const result = await getSubscriptionStatus();
-          if (result.isActive) {
-            console.log(
-              "Purchase Restored",
-              "Your previous purchases have been restored successfully."
-            );
-          } else {
-            console.log("No active subscription found after restore");
-          }
-        },
-      });
-      await view.present();
+          },
+          onCloseButtonPress: async () => {
+            resolve(false);
+          },
+        });
+
+        await view.present();
+      }
+    } catch (error) {
+      Alert.alert("Error", "Failed to load paywall. Please try again.");
+      console.error("Paywall error:", error);
+      reject(error);
     }
-  } catch (error) {
-    Alert.alert("Error", "Failed to load paywall. Please try again.");
-    console.error("Paywall error:", error);
-  }
+  });
 };
 
 // Notify server about purchase (only if user is logged in)

@@ -2,6 +2,7 @@ import { View, Text, Pressable } from "react-native";
 import React from "react";
 import tw from "twrnc";
 import { ListItemProps } from "../types/dashboard";
+import AppText from "./AppText";
 
 const ListItemWidget = (props: ListItemProps) => {
   return (
@@ -20,10 +21,10 @@ const ListItemWidget = (props: ListItemProps) => {
 
       <View style={tw`flex flex-row flex-1 items-center justify-between`}>
         <View>
-          <Text style={tw`text-xl font-bold`}>{props.title}</Text>
-          <Text style={tw`font-semibold mt-1`}>{props.description}</Text>
+          <AppText style={tw`text-xl font-bold`}>{props.title}</AppText>
+          <AppText style={tw`font-semibold mt-1`}>{props.description}</AppText>
         </View>
-        <Text style={tw`text-xl font-bold`}>{props.subTitle}</Text>
+        <AppText style={tw`text-xl font-bold`}>{props.subTitle}</AppText>
       </View>
     </Pressable>
   );

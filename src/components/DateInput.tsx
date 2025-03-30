@@ -9,6 +9,7 @@ import {
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useFormikContext } from "formik";
 import tw from "twrnc";
+import AppText from "./AppText";
 
 interface FormikDateInputProps extends TextInputProps {
   name: string;
@@ -45,7 +46,7 @@ const DateInput: React.FC<FormikDateInputProps> = ({
     <View style={tw.style(containerStyle)}>
       {title && (
         <View style={tw.style("")}>
-          <Text style={tw.style("mb-1 text-lg", textStyle)}>{title}</Text>
+          <AppText style={tw.style("mb-1 text-lg", textStyle)}>{title}</AppText>
         </View>
       )}
       <View
@@ -61,11 +62,11 @@ const DateInput: React.FC<FormikDateInputProps> = ({
             style
           )}
         >
-          <Text style={tw`text-gray-500 text-lg font-semibold`}>
+          <AppText style={tw`text-gray-500 text-lg font-semibold`}>
             {values[name] instanceof Date
               ? formatDate(values[name])
               : values[name] || placeholder}
-          </Text>
+          </AppText>
         </TouchableOpacity>
 
         {showPicker && (
@@ -78,7 +79,7 @@ const DateInput: React.FC<FormikDateInputProps> = ({
         )}
 
         {errors[name] && touched[name] && (
-          <Text style={tw`text-red-500`}>{errors[name]}</Text>
+          <AppText style={tw`text-red-500`}>{errors[name]}</AppText>
         )}
       </View>
     </View>

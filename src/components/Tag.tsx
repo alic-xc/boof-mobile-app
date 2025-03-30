@@ -2,6 +2,7 @@ import { View, Text, Pressable } from "react-native";
 import React from "react";
 import tw from "twrnc";
 import { CheckIcon } from "../icons";
+import AppText from "./AppText";
 
 interface ITagButton {
   onPress?: () => void;
@@ -33,7 +34,7 @@ const Tag = (props: ITagButton) => {
         </View>
       )}
 
-      <Text style={tw`font-bold`}> {props.title}</Text>
+      <AppText style={tw`font-bold`}> {props.title}</AppText>
     </Pressable>
   );
 };

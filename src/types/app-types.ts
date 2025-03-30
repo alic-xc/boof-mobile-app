@@ -15,7 +15,7 @@ export interface IUser {
   email: string;
   password: string;
   fullName: string;
-  business: string;
+  country: string;
 }
 
 // LegalAnalysis.ts (or wherever you store types)

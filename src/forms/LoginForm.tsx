@@ -75,17 +75,20 @@ const LoginForm = () => {
                 placeholder="Password"
                 style="border-0 bg-gray-200"
                 containerStyle="h-[45px]"
+                isPassword={true}
               />
               <TouchableWithoutFeedback
                 onPress={() => {
                   navigation.navigate("ResetPasswordRequest");
                 }}
               >
-                <Text style={tw` text-lg underline`}>Forgot Password ?</Text>
+                <AppText style={tw` text-lg underline`}>
+                  Forgot Password ?
+                </AppText>
               </TouchableWithoutFeedback>
             </View>
             <Button
-              style="py-3  flex-1 rounded-md"
+              style="py-3 flex-1 rounded-md"
               onPress={() => {
                 handleSubmit();
               }}
@@ -98,11 +101,11 @@ const LoginForm = () => {
                   <ActivityIndicator size="small" color="#fff" />
                 )}
 
-                <Text style={tw`text-white text-lg`}>Continue</Text>
+                <AppText style={tw`text-white text-lg`}>Continue</AppText>
               </View>
             </Button>
-            <View style={tw`flex flex-col items-center flex-1 gap-2 mt-5`}>
-              <Text>Or continue with your social accounts</Text>
+            {/* <View style={tw`flex flex-col items-center flex-1 gap-2 mt-5`}>
+              <AppText>Or continue with your social accounts</AppText>
               <Button
                 style="p-2 py-2 mt-2 flex-1 bg-white  rounded-md"
                 textStyle="text-black "
@@ -110,10 +113,10 @@ const LoginForm = () => {
               >
                 <View style={tw`flex flex-row items-center justify-center`}>
                   <AppleIcon color="black" width={24} height={24} />
-                  <Text style={tw``}> Continue with Apple</Text>
+                  <AppText style={tw``}> Continue with Apple</AppText>
                 </View>
               </Button>
-            </View>
+            </View> */}
 
             <TouchableWithoutFeedback
               onPress={() => {
@@ -121,9 +124,9 @@ const LoginForm = () => {
               }}
               style={tw`text-center`}
             >
-              <Text style={tw`text-center mt-5 text-lg underline`}>
+              <AppText style={tw`text-center mt-5 text-lg underline`}>
                 Don't have an account? Sign Up
-              </Text>
+              </AppText>
             </TouchableWithoutFeedback>
           </ScrollView>
         </KeyboardAvoidingView>

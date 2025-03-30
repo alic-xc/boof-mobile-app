@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import tw from "twrnc";
+import AppText from "./AppText";
 
 interface DayProps {
   date: Date;
@@ -18,16 +19,16 @@ const DayComponent = ({ date, isSelected, onSelect }: DayProps) => {
         isSelected ? "bg-blue-100 rounded-lg" : ""
       }`}
     >
-      <Text style={tw`text-xs text-gray-500`}>
+      <AppText style={tw`text-xs text-gray-500`}>
         {dayNames[date.getDay() === 0 ? 6 : date.getDay() - 1]}
-      </Text>
-      <Text
+      </AppText>
+      <AppText
         style={tw`text-base ${
           isSelected ? "text-blue-500 font-bold" : "text-gray-800"
         }`}
       >
         {date.getDate()}
-      </Text>
+      </AppText>
     </TouchableOpacity>
   );
 };
@@ -66,12 +67,12 @@ const Calendar = () => {
   return (
     <View style={tw`mt-4`}>
       <View style={tw`flex-row justify-between items-center mb-2`}>
-        <Text style={tw`text-lg font-semibold`}>
+        <AppText style={tw`text-lg font-semibold`}>
           {selectedDate.toLocaleDateString("en-US", {
             month: "short",
             year: "numeric",
           })}
-        </Text>
+        </AppText>
       </View>
       <ScrollView
         horizontal

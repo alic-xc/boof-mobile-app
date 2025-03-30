@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import { useFormikContext } from "formik";
 import tw from "twrnc";
+import AppText from "./AppText";
 
 interface FormikTextInputProps extends TextInputProps {
   name: string;
@@ -19,6 +20,7 @@ interface FormikTextInputProps extends TextInputProps {
   keyboardType?: KeyboardTypeOptions;
   multiline?: boolean;
   row?: number;
+  isPassword?: boolean;
 }
 
 const TextInput: React.FC<FormikTextInputProps> = ({
@@ -31,6 +33,7 @@ const TextInput: React.FC<FormikTextInputProps> = ({
   keyboardType = "email-address",
   row = 0,
   multiline = false,
+  isPassword = false,
   ...props
 }) => {
   const { handleChange, handleBlur, values, errors, touched } =
@@ -39,7 +42,7 @@ const TextInput: React.FC<FormikTextInputProps> = ({
   return (
     <View style={tw``}>
       {title && (
-          <Text style={tw.style("mb-1 text-lg", textStyle)}>{title}</Text>
+        <AppText style={tw.style("mb-1 text-lg", textStyle)}>{title}</AppText>
       )}
       <View
         style={tw.style(
@@ -62,11 +65,12 @@ const TextInput: React.FC<FormikTextInputProps> = ({
           returnKeyType="next"
           returnKeyLabel="next"
           multiline={multiline}
+          secureTextEntry={isPassword}
           // numberOfLines={row}
           {...props}
         />
         {/* {errors[name] && touched[name] && (
-        <Text style={tw`text-red-500`}>{errors[name]}</Text>
+        <AppText style={tw`text-red-500`}>{errors[name]}</AppText>
       )} */}
       </View>
     </View>

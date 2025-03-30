@@ -1,6 +1,7 @@
 import { View, Text, Pressable } from "react-native";
 import React, { useState } from "react";
 import tw from "twrnc";
+import AppText from "./AppText";
 
 interface NavSwitchProps {
   options: string[];
@@ -28,9 +29,9 @@ const NavSwitch = (props: NavSwitchProps) => {
               selectedOption === option ? tw`bg-white` : tw``,
             ]}
           >
-            <Text style={[tw`text-center text-lg font-semibold text-black`]}>
+            <AppText style={[tw`text-center text-lg font-semibold text-black`]}>
               {option}
-            </Text>
+            </AppText>
           </Pressable>
         ))}
       </View>

@@ -8,9 +8,9 @@ import { RootStackParamList } from "../types/navigation-types";
 import { ListItemProps } from "../types/dashboard";
 import ListItem from "../components/ListItem";
 import { LeftIcon } from "../icons";
-
 import { AppEntity } from "../state/app-entity";
 import { handleLogout } from "../utils/superbase";
+import AppText from "../components/AppText";
 
 const rightIcon = <LeftIcon width={24} height={24} color="black" />;
 
@@ -21,14 +21,14 @@ const More = () => {
   const data: (ListItemProps | any)[] = [
     {
       icon: rightIcon,
-      component: <Text style={tw`text-lg font-bold`}>Profile</Text>,
+      component: <AppText style={tw`text-lg font-bold`}>Profile</AppText>,
       onPress: () => {
         navigation.navigate("Profile");
       },
     },
     {
       icon: rightIcon,
-      component: <Text style={tw`text-lg font-bold`}>About Us</Text>,
+      component: <AppText style={tw`text-lg font-bold`}>About Us</AppText>,
       onPress: () => {
         navigation.navigate("About");
       },
@@ -36,7 +36,7 @@ const More = () => {
 
     {
       icon: rightIcon,
-      component: <Text style={tw`text-lg font-bold`}>Term of Use </Text>,
+      component: <AppText style={tw`text-lg font-bold`}>Term of Use </AppText>,
       onPress: () => {
         Linking.openURL("https://boof.alicsystems.com/#/terms");
       },
@@ -44,14 +44,16 @@ const More = () => {
 
     {
       icon: rightIcon,
-      component: <Text style={tw`text-lg font-bold`}>Privacy & Policy</Text>,
+      component: (
+        <AppText style={tw`text-lg font-bold`}>Privacy & Policy</AppText>
+      ),
       onPress: () => {
         Linking.openURL("https://boof.alicsystems.com/#/privacy");
       },
     },
     {
       icon: rightIcon,
-      component: <Text style={tw`text-lg font-bold`}>Sign Out</Text>,
+      component: <AppText style={tw`text-lg font-bold`}>Sign Out</AppText>,
       onPress: () => {
         handleLogout().then((res) => {
           if (res === "completed") {
@@ -66,8 +68,10 @@ const More = () => {
     <GestureHandlerRootView>
       <SafeAreaView style={tw`flex flex-1 flex-col gap-3 pt-5 px-4 `}>
         <View>
-          <Text style={tw`text-2xl font-bold`}>App Settings</Text>
-          <Text style={tw`text-lg`}>Learn more about our app and services</Text>
+          <AppText style={tw`text-2xl font-bold`}>App Settings</AppText>
+          <AppText style={tw`text-lg`}>
+            Learn more about our app and services
+          </AppText>
         </View>
 
         <ScrollView

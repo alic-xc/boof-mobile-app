@@ -1,5 +1,6 @@
 import { View, Text } from "react-native";
 import tw from "twrnc";
+import AppText from "./AppText";
 
 interface ListTextItemProps {
   primary: string;
@@ -9,8 +10,8 @@ interface ListTextItemProps {
 export const ListTextItem = (props: ListTextItemProps) => {
   return (
     <View style={tw`mb-4`}>
-      <Text style={tw`text-lg font-bold`}>{props.primary}</Text>
-      <Text style={tw`text-sm mt-0`}>{props.secondary}</Text>
+      <AppText style={tw`text-lg font-bold`}>{props.primary}</AppText>
+      <AppText style={tw`text-sm mt-0`}>{props.secondary}</AppText>
     </View>
   );
 };

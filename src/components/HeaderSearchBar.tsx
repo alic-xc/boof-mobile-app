@@ -5,7 +5,7 @@ import {
   Pressable,
   TouchableOpacity,
 } from "react-native";
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import tw from "twrnc";
 import { Ionicons } from "@expo/vector-icons"; // Or your preferred icon library
 import { FilterIcon } from "../icons";
@@ -13,7 +13,7 @@ import BottomSheet from "./BottomSheet";
 import { Formik } from "formik";
 import DateInput from "./DateInput";
 import CustomSelect from "./CustomSelect";
-
+import AppText from "./AppText";
 
 interface HeaderSearchBarProps {
   onSearchChange?: (text: string) => void;
@@ -84,7 +84,7 @@ const HeaderSearchBar = ({
           }}
           height={"65%"}
         >
-          <Text style={tw`text-xl font-bold mb-3 px-4`}>Filter By</Text>
+          <AppText style={tw`text-xl font-bold mb-3 px-4`}>Filter By</AppText>
 
           <Formik initialValues={initialValues} onSubmit={(values) => {}}>
             {({ handleSubmit, setFieldValue, values, errors, touched }) => (
@@ -109,8 +109,9 @@ const HeaderSearchBar = ({
                 </View>
 
                 <View style={tw`mt-1`}>
-                  <Text style={tw`text-lg mb-1`}>Price Range (1,1000)</Text>
-                  
+                  <AppText style={tw`text-lg mb-1`}>
+                    Price Range (1,1000)
+                  </AppText>
                 </View>
 
                 <CustomSelect
@@ -138,9 +139,9 @@ const HeaderSearchBar = ({
                     setIsVisible(false);
                   }}
                 >
-                  <Text style={tw`text-white text-center font-bold`}>
+                  <AppText style={tw`text-white text-center font-bold`}>
                     Continue
-                  </Text>
+                  </AppText>
                 </TouchableOpacity>
               </View>
             )}

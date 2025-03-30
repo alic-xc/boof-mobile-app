@@ -6,6 +6,7 @@ import {
   ViewStyle,
   TextStyle,
 } from "react-native";
+import AppText from "./AppText";
 
 interface IconButtonProps {
   icon: string; // Icon name based on the chosen icon library
@@ -48,11 +49,11 @@ const MUIButton: React.FC<IconButtonProps> = ({
     >
       {icon}
       {label && (
-        <Text
+        <AppText
           style={[{ marginLeft: 8, fontSize: size * 0.6, color }, labelStyle]}
         >
           {label}
-        </Text>
+        </AppText>
       )}
     </TouchableOpacity>
   );

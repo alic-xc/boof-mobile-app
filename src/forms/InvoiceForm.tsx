@@ -26,9 +26,7 @@ const InvoiceForm = () => {
       }}
       validationSchema={UserSchema}
       onSubmit={(values) => {
-        const data = {
-          
-        };
+        const data = {};
       }}
     >
       {({
@@ -62,7 +60,7 @@ const InvoiceForm = () => {
                 containerStyle="h-[50px]"
               />
             </View>
-            <Button  onPress={() => {}}>Continue</Button>
+            <Button onPress={() => {}}>Continue</Button>
           </ScrollView>
         </KeyboardAvoidingView>
       )}

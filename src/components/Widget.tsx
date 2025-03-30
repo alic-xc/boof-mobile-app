@@ -1,6 +1,7 @@
 import { View, Text } from "react-native";
 import React from "react";
 import tw from "twrnc";
+import AppText from "./AppText";
 
 interface WidgetProps {
   title: React.ReactNode | string;
@@ -18,10 +19,9 @@ const Widget = (props: WidgetProps) => {
         {props.icon}
       </View>
       <View style={tw``}>
-        <Text style={tw`font-light text-left text-[17px] text-[#1e2424]`}>
+        <AppText style={tw`font-light text-left text-[17px] text-[#1e2424]`}>
           {props.title}
-        </Text>
-        
+        </AppText>
       </View>
     </View>
   );

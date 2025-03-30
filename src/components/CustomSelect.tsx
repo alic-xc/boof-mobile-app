@@ -8,6 +8,7 @@ import { Picker } from "@react-native-picker/picker";
 import colors from "../constant/Color";
 import Button from "./Button";
 import { CheckIcon } from "../icons";
+import AppText from "./AppText";
 
 interface Option {
   label: string | React.ReactNode;
@@ -56,23 +57,23 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
     <View style={tw.style(` flex flex-col`, containerStyle)}>
       {title && (
         <View style={tw.style("text-[red]")}>
-          <Text style={tw.style("mb-1 text-lg", textStyle)}>{title}</Text>
+          <AppText style={tw.style("mb-1 text-lg", textStyle)}>{title}</AppText>
         </View>
       )}
       <TouchableOpacity
         style={tw`flex-1 flex-col rounded-md justify-center h-[50px] bg-gray-100 px-3 `}
         onPress={() => setIsVisible(true)}
       >
-        <Text style={tw`text-lg text-gray-800`}>
+        <AppText style={tw`text-lg text-gray-800`}>
           {values[name]
             ? data.find((option) => option.value === values[name])?.label
             : placeholder}
-        </Text>
+        </AppText>
       </TouchableOpacity>
 
       {/* Error message */}
       {errors[name] && touched[name] && (
-        <Text style={tw`"text-red-500 text-sm mt-1`}>{errors[name]}</Text>
+        <AppText style={tw`"text-red-500 text-sm mt-1`}>{errors[name]}</AppText>
       )}
       {!isPicker && (
         <BottomSheet
@@ -82,9 +83,9 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
           closeModal={() => setIsVisible(false)}
         >
           <View style={tw`flex flex-1 p-5`}>
-            <Text style={tw`text-xl font-bold mb-5 capitalize`}>
+            <AppText style={tw`text-xl font-bold mb-5 capitalize`}>
               Select {title}
-            </Text>
+            </AppText>
 
             <ScrollView
               horizontal={horizontal}
@@ -119,7 +120,7 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
                           handleSelect(item);
                         }}
                       >
-                        <Text
+                        <AppText
                           style={tw.style(
                             `text-lg `,
                             item.value === values[name]
@@ -128,7 +129,7 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
                           )}
                         >
                           {item.label}
-                        </Text>
+                        </AppText>
                         <View
                           style={tw.style(
                             `w-5 h-5  rounded-full`,
@@ -153,10 +154,10 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
                 style={tw`flex-row justify-between p-4 border-b border-gray-200`}
               >
                 <TouchableOpacity onPress={() => setIsVisible(false)}>
-                  <Text style={tw`text-blue-500 text-lg`}>Cancel</Text>
+                  <AppText style={tw`text-blue-500 text-lg`}>Cancel</AppText>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => setIsVisible(false)}>
-                  <Text style={tw`text-blue-500 text-lg`}>Done</Text>
+                  <AppText style={tw`text-blue-500 text-lg`}>Done</AppText>
                 </TouchableOpacity>
               </View>
               <Picker

@@ -4,6 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import tw from "twrnc";
 import HeaderSearchBar from "./HeaderSearchBar";
 import { getTimeBasedGreeting } from "../utils/greetings";
+import AppText from "./AppText";
 
 interface SearchProps {
   onSearchChange?: (text: string) => void;
@@ -45,9 +46,9 @@ const Search = (props: SearchProps) => {
       )}
       {!isSearchVisible && (
         <>
-          <Text style={tw`text-xl text-white font-bold`}>
+          <AppText style={tw`text-xl text-white font-bold`}>
             {getTimeBasedGreeting(props.text)}
-          </Text>
+          </AppText>
           <Pressable onPress={toggleSearch}>
             <Ionicons name="search" size={24} color="#fff" />
           </Pressable>

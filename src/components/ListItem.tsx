@@ -3,6 +3,7 @@ import React from "react";
 import tw from "twrnc";
 import { ListItemProps } from "../types/dashboard";
 import { CancelIcon, CheckIcon, ShieldWarningIcon } from "../icons";
+import AppText from "./AppText";
 
 const ListItem = (props: ListItemProps) => {
   if (props.uiSwitch) {
@@ -24,7 +25,9 @@ const ListItem = (props: ListItemProps) => {
           )}
         </View>
         <View style={tw`p-0.5 rounded-md`}>{props.startIcon}</View>
-        <Text style={tw.style(`text-lg`, props.textStyle)}>{props.title}</Text>
+        <AppText style={tw.style(`text-lg`, props.textStyle)}>
+          {props.title}
+        </AppText>
       </Pressable>
     );
   }
@@ -43,9 +46,9 @@ const ListItem = (props: ListItemProps) => {
         <View>
           {props.component && props.component}
           {!props.component && (
-            <Text style={tw.style(`text-xl`, props.textStyle)}>
+            <AppText style={tw.style(`text-xl`, props.textStyle)}>
               {props.title}
-            </Text>
+            </AppText>
           )}
         </View>
 

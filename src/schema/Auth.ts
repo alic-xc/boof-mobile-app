@@ -49,7 +49,7 @@ export const UserSchema = Yup.object().shape({
     .required("Full name is required")
     .min(2, "Minimum of 2 characters"),
   email: Yup.string().email().required("Email is required"),
-  business: Yup.string().required("Business is required"),
+  country: Yup.string().required("Country is required"),
   password: Yup.string()
     .required("Password is required")
     .min(7, "Minimum of 8 characters"),

@@ -8,6 +8,8 @@ import ListItem from "../components/ListItem";
 import { ListItemProps } from "../types/dashboard";
 import { AppEntity } from "../state/app-entity";
 import { getSubscriptionStatus } from "../utils/paywall";
+import AppText from "../components/AppText";
+
 
 const Profile = () => {
   const { session } = AppEntity.get();
@@ -19,17 +21,16 @@ const Profile = () => {
     });
   }, []);
 
-  console.log(subscription);
 
   const data: (ListItemProps | any)[] = [
     {
       icon: "",
       component: (
         <View style={tw``}>
-          <Text style={tw`text-sm font-light`}>First Name</Text>
-          <Text style={tw`text-lg `}>
+          <AppText style={tw`text-sm font-light`}>First Name</AppText>
+          <AppText style={tw`text-lg `}>
             {String(session?.user.user_metadata.full_name).split(" ")?.[0]}
-          </Text>
+          </AppText>
         </View>
       ),
       onPress: () => {},
@@ -38,11 +39,11 @@ const Profile = () => {
       icon: "",
       component: (
         <View style={tw``}>
-          <Text style={tw`text-sm font-light`}>Last Name</Text>
-          <Text style={tw`text-lg `}>
+          <AppText style={tw`text-sm font-light`}>Last Name</AppText>
+          <AppText style={tw`text-lg `}>
             {String(session?.user.user_metadata.full_name).split(" ")?.[1] ||
               "-"}
-          </Text>
+          </AppText>
         </View>
       ),
       onPress: () => {},
@@ -51,8 +52,10 @@ const Profile = () => {
       icon: "",
       component: (
         <View style={tw``}>
-          <Text style={tw`text-sm font-light`}>Email</Text>
-          <Text style={tw`text-lg `}>{session?.user.user_metadata.email}</Text>
+          <AppText style={tw`text-sm font-light`}>Email</AppText>
+          <AppText style={tw`text-lg `}>
+            {session?.user.user_metadata.email}
+          </AppText>
         </View>
       ),
       onPress: () => {},
@@ -61,10 +64,12 @@ const Profile = () => {
       icon: "",
       component: (
         <View style={tw``}>
-          <Text style={tw`text-sm font-light`}>
+          <AppText style={tw`text-sm font-light`}>
             Total Credit ({subscription?.type})
-          </Text>
-          <Text style={tw`text-lg `}>({subscription?.credit_remaining})</Text>
+          </AppText>
+          <AppText style={tw`text-lg `}>
+            ({subscription?.credit_remaining})
+          </AppText>
         </View>
       ),
       onPress: () => {},

@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
 import PagerView from "react-native-pager-view";
 import React, { useRef, useState, useEffect } from "react";
 import tw from "twrnc";
@@ -7,6 +7,7 @@ import colors from "../../constant/Color";
 import { subscriber } from "../../utils/paywall";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { HAS_SEEN_ONBOARDING } from "../../utils/constants";
+import AppText from "../../components/AppText";
 
 interface QuizOption {
   text: string;
@@ -32,6 +33,7 @@ interface QuizResultProps {
 
 const SubscriptionQuiz = ({ navigation }) => {
   const [currentPage, setCurrentPage] = useState(0);
+  const [isPaywall, setIsPaywall] = useState<boolean>(false);
   const [quizResponses, setQuizResponses] = useState<{ [key: number]: number }>(
     {}
   );
@@ -43,10 +45,15 @@ const SubscriptionQuiz = ({ navigation }) => {
 
   const handleGetStarted = async () => {
     try {
-      await AsyncStorage.setItem(HAS_SEEN_ONBOARDING, "true");
-      subscriber().finally(() => {
-        navigation.navigate("Registration");
-      });
+      setIsPaywall(true);
+      subscriber()
+        .then(async (data) => {
+          await AsyncStorage.setItem(HAS_SEEN_ONBOARDING, "true");
+          navigation.navigate("Registration");
+        })
+        .finally(() => {
+          setIsPaywall(false);
+        });
     } catch (error) {
       console.error("Failed to show paywall:", error);
     }
@@ -82,66 +89,67 @@ const SubscriptionQuiz = ({ navigation }) => {
 
   const pages = [
     {
-      question: "What's your biggest legal worry?",
+      question: "What slows your contract review?",
       options: [
-        { text: "Missing contract risks", score: 8 },
-        { text: "Understanding legal jargon", score: 7 },
-        { text: "Reviewing documents takes too long", score: 9 },
-        { text: "Lack of legal expertise", score: 10 },
+        { text: "Hidden risks", score: 8 },
+        { text: "Complex terms", score: 7 },
+        { text: "Too much time", score: 9 },
+        { text: "Unsure what’s key", score: 10 },
       ],
       hookText:
-        "Your concerns are valid. 78% of professionals miss critical legal details.",
+        "Most pros miss costly details. LegalBoof spots them fast—try it now.",
       pageIndex: 0,
       totalPages: 5,
     },
     {
-      question: "How often do you deal with legal agreements?",
+      question: "How often do you review agreements?",
       options: [
         { text: "Daily", score: 10 },
         { text: "Weekly", score: 8 },
         { text: "Monthly", score: 6 },
         { text: "Rarely", score: 4 },
       ],
-      hookText: "Imagine saving hours every week with Boof's instant analysis.",
+      hookText:
+        "Frequent reviews mean higher stakes. Speed up with LegalBoof’s scan.",
       pageIndex: 1,
       totalPages: 5,
     },
     {
-      question: "How do you currently handle legal documents?",
+      question: "How do you check legal docs?",
       options: [
-        { text: "Pay expensive lawyers", score: 9 },
-        { text: "Try to read them myself", score: 7 },
-        { text: "Skip the fine print", score: 10 },
-        { text: "Ask a colleague", score: 6 },
+        { text: "Hire costly help", score: 9 },
+        { text: "Read it myself", score: 7 },
+        { text: "Skim quickly", score: 10 },
+        { text: "Guess and hope", score: 6 },
       ],
       hookText:
-        "Boof offers expert-level analysis at a fraction of traditional costs.",
+        "DIY risks errors; pros cost more. LegalBoof reviews smarter, cheaper.",
       pageIndex: 2,
       totalPages: 5,
     },
     {
-      question: "What happens if you miss a legal detail?",
+      question: "What’s your worst review fear?",
       options: [
-        { text: "Financial penalties", score: 9 },
-        { text: "Contract disputes", score: 8 },
-        { text: "Compliance issues", score: 10 },
-        { text: "Loss of opportunities", score: 7 },
+        { text: "Costly oversights", score: 9 },
+        { text: "Dispute surprises", score: 8 },
+        { text: "Rule breaches", score: 10 },
+        { text: "Missed chances", score: 7 },
       ],
       hookText:
-        "You've worked too hard to let legal oversights derail your success.",
+        "One missed term can hurt. LegalBoof flags risks before you sign.",
       pageIndex: 3,
       totalPages: 5,
     },
     {
-      question: "How important is reducing legal risk to you?",
+      question: "Value quick document checks?",
       options: [
-        { text: "Extremely important", score: 10 },
-        { text: "Very important", score: 8 },
-        { text: "Somewhat important", score: 6 },
-        { text: "Not very important", score: 3 },
+        { text: "Top priority", score: 10 },
+        { text: "Quite useful", score: 8 },
+        { text: "Nice to have", score: 6 },
+        { text: "Not a focus", score: 3 },
       ],
       hookText:
-        "Peace of mind isn't just nice to have—it's essential for growth.",
+        "Smart reviews save time and worry. Start with LegalBoof today.",
       pageIndex: 4,
       totalPages: 5,
     },
@@ -158,12 +166,12 @@ const SubscriptionQuiz = ({ navigation }) => {
   }: QuizPageProps) => (
     <View style={tw`flex-1 justify-between bg-white px-4 py-10`}>
       <View style={tw`flex-1 justify-center items-center`}>
-        <Text style={tw`text-3xl font-bold text-center text-[#1e2424]`}>
+        <AppText style={tw`text-3xl font-bold text-center text-[#1e2424]`}>
           {question}
-        </Text>
-        <Text style={tw`text-lg text-center mt-4 text-gray-600`}>
+        </AppText>
+        <AppText style={tw`text-lg text-center mt-4 text-gray-600`}>
           {hookText}
-        </Text>
+        </AppText>
       </View>
       <View style={tw`mb-10`}>
         {options.map((option, index) => (
@@ -176,9 +184,9 @@ const SubscriptionQuiz = ({ navigation }) => {
             }`}
             onPress={() => onSelectOption(option.score, index)}
           >
-            <Text style={tw`text-white text-lg text-center font-bold`}>
+            <AppText style={tw`text-white text-lg text-center font-bold`}>
               {option.text}
-            </Text>
+            </AppText>
           </TouchableOpacity>
         ))}
       </View>
@@ -208,55 +216,55 @@ const SubscriptionQuiz = ({ navigation }) => {
 
     let resultText = "";
     let recommendationText = "";
-
     if (percentage >= 85) {
-      resultText = "High Risk Legal Profile";
+      resultText = "🚨 Elevated Risk Profile";
       recommendationText =
-        "Your legal risk exposure is significant. Boof Assistant would provide critical protection for your legal needs.";
+        "Great job spotting this! Your contracts hide costly traps—missed terms could sting soon. **Boof Assistant scans fast, catching risks so you don’t.** Imagine signing with total confidence.";
     } else if (percentage >= 65) {
-      resultText = "Moderate Risk Legal Profile";
+      resultText = "⚠️ Notable Risk Profile";
       recommendationText =
-        "You face notable legal challenges. Boof Assistant would help you navigate these complex issues efficiently.";
+        "Smart move checking in! You’re juggling tricky clauses—delays or oversights add up. **Boof Assistant simplifies reviews, saving you time and worry.** Picture stress-free agreements.";
     } else {
-      resultText = "Baseline Risk Legal Profile";
+      resultText = "✅ Steady Risk Profile";
       recommendationText =
-        "Even with lower risk, Boof Assistant would help you prevent potential legal issues before they occur.";
+        "Nice work staying aware! Even small gaps in contracts can grow costly. **Boof Assistant keeps you sharp, spotting issues instantly.** See how easy reviews could be.";
     }
 
     return (
       <View style={tw`flex-1 justify-between bg-white px-4 py-10`}>
         <View style={tw`flex-1 justify-center items-center`}>
-          <Text style={tw`text-3xl font-bold text-center text-[#1e2424]`}>
+          <AppText style={tw`text-3xl font-bold text-center text-[#1e2424]`}>
             Your Results
-          </Text>
+          </AppText>
 
           <View style={tw`mt-8 items-center`}>
-            <Text style={tw`text-2xl font-bold text-[${colors.primary}]`}>
+            <AppText style={tw`text-2xl font-bold text-[${colors.primary}]`}>
               {resultText}
-            </Text>
-            <Text
+            </AppText>
+            <AppText
               style={tw`text-5xl font-bold my-4 text-[${colors.secondary}]`}
             >
               {percentage}%
-            </Text>
-            <Text style={tw`text-lg text-center mt-2 mb-6 text-gray-700`}>
+            </AppText>
+            <AppText style={tw`text-lg text-center mt-2 mb-6 text-gray-700`}>
               {recommendationText}
-            </Text>
-            <Text style={tw`text-lg text-center mt-2 text-gray-600 italic`}>
+            </AppText>
+            <AppText style={tw`text-lg text-center mt-2 text-gray-600 italic`}>
               "93% of users with your profile saved an average of 7 hours per
               week with Boof Assistant."
-            </Text>
+            </AppText>
           </View>
         </View>
 
         <View style={tw`mb-6`}>
           <TouchableOpacity
-            style={tw`py-4 rounded-6 bg-[${colors.primary}]`}
+            style={tw` flex flex-row items-center gap-2  justify-center py-4 rounded-6 bg-[${colors.primary}]`}
             onPress={onSubscribe}
           >
-            <Text style={tw`text-white text-lg font-bold text-center`}>
+            {isPaywall && <ActivityIndicator size="small" color="#fff" />}
+            <AppText style={tw`text-white text-lg font-bold text-center`}>
               Get Started
-            </Text>
+            </AppText>
           </TouchableOpacity>
         </View>
       </View>

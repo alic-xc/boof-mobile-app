@@ -3,6 +3,7 @@ import React from "react";
 import tw from "twrnc";
 import { useNavigation } from "@react-navigation/native";
 import { ArrowLeftIcon } from "../icons";
+import AppText from "./AppText";
 
 interface HeaderProps {
   title: string | React.ReactNode;
@@ -30,7 +31,7 @@ const Header = (props: HeaderProps) => {
           </Pressable>
         )}
 
-        <Text style={tw`text-xl font-bold`}>{props.title}</Text>
+        <AppText style={tw`text-xl font-bold`}>{props.title}</AppText>
       </View>
       <View>{props.other}</View>
     </View>

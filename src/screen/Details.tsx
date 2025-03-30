@@ -21,6 +21,8 @@ import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { LegalAnalysis } from "../types/app-types";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../types/navigation-types";
+import AppText from "../components/AppText";
+
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
@@ -54,7 +56,7 @@ const Details = () => {
         riskPercent.value = withTiming(parsedAnalysis.summary.riskScore, {
           duration: 1000,
         });
-        fairnessPercent.value = withTiming(parsedAnalysis.fairness.score, {
+        fairnessPercent.value = withTiming(parsedAnalysis.fairness.score * 10, {
           duration: 1000,
         });
         setTriggerchange(true);
@@ -76,7 +78,8 @@ const Details = () => {
     setModalVisible(true);
   };
 
-  if (!analysis) return <Text style={tw`text-center mt-10`}>Loading...</Text>;
+  if (!analysis)
+    return <AppText style={tw`text-center mt-10`}>Loading...</AppText>;
 
   const {
     summary,
@@ -183,12 +186,12 @@ const Details = () => {
               alignItems: "center",
             }}
           >
-            <Text style={{ fontSize: 18, fontWeight: "bold" }}>
+            <AppText style={{ fontSize: 18, fontWeight: "bold" }}>
               {Math.round(percent.value)}%
-            </Text>
+            </AppText>
           </View>
         </View>
-        <Text style={tw`mt-2`}>{label}</Text>
+        <AppText style={tw`mt-2`}>{label}</AppText>
       </View>
     );
   };
@@ -204,7 +207,9 @@ const Details = () => {
           />
           <ScrollView>
             <View style={tw`px-4 py-2`}>
-              <Text style={tw`text-2xl font-light text-center`}>Report</Text>
+              <AppText style={tw`text-2xl font-light text-center`}>
+                Report
+              </AppText>
 
               {/* Summary */}
               <View style={tw`flex flex-row justify-center gap-10`}>
@@ -227,101 +232,103 @@ const Details = () => {
                   />
                 </Animated.View>
               </View>
-              <Text style={tw`text-xl mt-4`}>Summary</Text>
-              <Text style={tw`mt-2 text-justify leading-5`}>
+              <AppText style={tw`text-xl mt-4`}>Summary</AppText>
+              <AppText style={tw`mt-2 text-justify leading-5`}>
                 {summary.overview}
-              </Text>
-              <Text style={tw`mt-1 font-bold`}>
+              </AppText>
+              <AppText style={tw`mt-1 font-bold`}>
                 Clauses: {summary.totalClauses}
-              </Text>
+              </AppText>
 
               {/* Key Points */}
-              <Text style={tw`text-xl mt-6`}>Key Points</Text>
+              <AppText style={tw`text-xl mt-6`}>Key Points</AppText>
               {keyPoints.map((point, index) => (
                 <TouchableOpacity
                   key={index}
                   style={tw`flex-row justify-between items-center p-3 bg-gray-100 rounded-lg mt-2`}
                   onPress={() => handleKeyPointPress(point)}
                 >
-                  <Text style={tw`text-base flex-1`}>{point.title}</Text>
-                  <Text
+                  <AppText style={tw`text-base flex-1`}>{point.title}</AppText>
+                  <AppText
                     style={tw`text-lg text-${getSeverityColor(
                       point.riskLevel
                     )}`}
                   >
                     {point.riskLevel}
-                  </Text>
+                  </AppText>
                 </TouchableOpacity>
               ))}
 
               {/* Fairness */}
-              <Text style={tw`text-xl mt-6`}>Fairness</Text>
+              <AppText style={tw`text-xl mt-6`}>Fairness</AppText>
 
               {fairness.issues.map((issue, index) => (
-                <Text key={index} style={tw`mt-2`}>
+                <AppText key={index} style={tw`mt-2`}>
                   {issue.description} ({issue.partyFavored})
-                </Text>
+                </AppText>
               ))}
 
               {/* Compliance Summary */}
-              <Text style={tw`text-xl mt-6`}>Compliance Summary</Text>
-              <Text style={tw`mt-2`}>{complianceSummary.details}</Text>
-              <Text style={tw`mt-1`}>
+              <AppText style={tw`text-xl mt-6`}>Compliance Summary</AppText>
+              <AppText style={tw`mt-2`}>{complianceSummary.details}</AppText>
+              <AppText style={tw`mt-1`}>
                 Issues: {complianceSummary.issuesCount}
-              </Text>
+              </AppText>
 
               {/* Blind Spots */}
-              <Text style={tw`text-xl mt-6`}>Blind Spots</Text>
+              <AppText style={tw`text-xl mt-6`}>Blind Spots</AppText>
               {blindSpots.map((spot, index) => (
                 <View key={index} style={tw`mt-2`}>
-                  <Text>{spot.description}</Text>
-                  <Text style={tw`text-gray-600`}>
+                  <AppText>{spot.description}</AppText>
+                  <AppText style={tw`text-gray-600`}>
                     Recommendation: {spot.recommendation}
-                  </Text>
+                  </AppText>
                 </View>
               ))}
 
               {/* Metrics */}
-              <Text style={tw`text-xl mt-6`}>Metrics</Text>
+              <AppText style={tw`text-xl mt-6`}>Metrics</AppText>
               <View style={tw`px-2`}>
-                <Text style={tw`mt-5 font-bold`}>Risk Distribution</Text>
+                <AppText style={tw`mt-5 font-bold`}>Risk Distribution</AppText>
                 <View style={tw`flex-row justify-around mb-5`}>
                   <View style={tw`flex flex-col items-center `}>
-                    <Text
+                    <AppText
                       style={tw`mt-1 text-2xl font-semibold text-green-500`}
                     >
                       {metrics.riskDistribution.low}
-                    </Text>
-                    <Text
+                    </AppText>
+                    <AppText
                       style={tw`text-center font-light text-lg text-green-500`}
                     >
                       Low
-                    </Text>
+                    </AppText>
                   </View>
                   <View style={tw`flex flex-col items-center`}>
-                    <Text
+                    <AppText
                       style={tw`mt-1 text-2xl font-semibold text-yellow-500`}
                     >
                       {metrics.riskDistribution.medium}
-                    </Text>
-                    <Text
+                    </AppText>
+                    <AppText
                       style={tw`text-center font-light text-lg text-yellow-500`}
                     >
                       Medium
-                    </Text>
+                    </AppText>
                   </View>
                   <View style={tw`flex flex-col items-center `}>
-                    <Text style={tw`mt-1 text-2xl font-semibold text-red-500`}>
+                    <AppText
+                      style={tw`mt-1 text-2xl font-semibold text-red-500`}
+                    >
                       {metrics.riskDistribution.high}
-                    </Text>
-                    <Text
+                    </AppText>
+                    <AppText
                       style={tw`text-center font-light text-lg text-red-500`}
                     >
                       High
-                    </Text>
+                    </AppText>
                   </View>
                 </View>
-                <Text style={tw`mt-2 mb-2 font-bold`}>Clause Types</Text>
+                <AppText style={tw`mt-2 mb-2 font-bold`}>Clause Types</AppText>
                 <View
                   style={tw`flex flex-row flex-wrap justify-between items-center gap-3 px-2`}
                 >
@@ -330,14 +337,14 @@ const Details = () => {
                       key={index}
                       style={tw`flex flex-row justify-between items-center w-full `}
                     >
-                      <Text style={tw`text-center font-light text-lg`}>
+                      <AppText style={tw`text-center font-light text-lg`}>
                         {type.type}
-                      </Text>
-                      <Text
+                      </AppText>
+                      <AppText
                         style={tw`text-lg leading-9 font-bold w-8 h-8 rounded-full bg-[#f1f1f1] text-center flex flex-row items-center justify-center `}
                       >
                         {type.count}
-                      </Text>
+                      </AppText>
                     </View>
                   ))}
                 </View>
@@ -353,35 +360,35 @@ const Details = () => {
           >
             {selectedPoint && (
               <View style={tw`flex flex-col gap-2 flex-1 px-4 py-2`}>
-                <Text style={tw`text-2xl font-bold mb-3`}>
+                <AppText style={tw`text-2xl font-bold mb-3`}>
                   {selectedPoint.title}
-                </Text>
+                </AppText>
                 <View
                   style={tw`px-3 py-1 self-start rounded-full bg-${getSeverityColor(
                     selectedPoint.riskLevel
                   )} bg-opacity-20 mb-2`}
                 >
-                  <Text
+                  <AppText
                     style={tw`text-${getSeverityColor(
                       selectedPoint.riskLevel
                     )} font-medium`}
                   >
                     {selectedPoint.riskLevel.toUpperCase()} RISK
-                  </Text>
+                  </AppText>
                 </View>
-                <Text style={tw`text-base leading-6 mb-3`}>
+                <AppText style={tw`text-base leading-6 mb-3`}>
                   {selectedPoint.description}
-                </Text>
+                </AppText>
                 <View style={tw`bg-gray-50 p-3 rounded-lg mb-2`}>
-                  <Text style={tw`text-base font-medium mb-1`}>
+                  <AppText style={tw`text-base font-medium mb-1`}>
                     Compliance:{" "}
                     {selectedPoint.compliance.isCompliant
                       ? "Compliant"
                       : "Non-Compliant"}
-                  </Text>
-                  <Text style={tw`text-gray-700`}>
+                  </AppText>
+                  <AppText style={tw`text-gray-700`}>
                     {selectedPoint.compliance.notes}
-                  </Text>
+                  </AppText>
                 </View>
               </View>
             )}
