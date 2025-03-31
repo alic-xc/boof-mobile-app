@@ -39,6 +39,7 @@ export const getSubscriptionStatus = async () => {
     });
     if (!response.ok) throw new Error("Failed to fetch subscription status");
     const data = await response.json();
+    console.log("iopop", data);
     return {
       credit_remaining: data.credits_remaining,
       type:

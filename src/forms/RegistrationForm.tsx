@@ -16,7 +16,6 @@ import Button from "../components/Button";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import { RootStackParamList } from "../types/navigation-types";
 import { AuthEntity } from "../state/auth-entity";
-import PhoneInput from "../components/PhoneInput";
 import { AppleIcon } from "../icons";
 import { signUp } from "../utils/superbase";
 import { AppEntity } from "../state/app-entity";
@@ -24,6 +23,7 @@ import CountryPicker, {
   Country,
   CountryCode,
 } from "react-native-country-picker-modal";
+import AppText from "../components/AppText";
 
 const RegistrationForm = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();

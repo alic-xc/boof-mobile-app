@@ -18,6 +18,7 @@ import { RootStackParamList } from "../types/navigation-types";
 import { AuthEntity } from "../state/auth-entity";
 import { AppleIcon } from "../icons";
 import { handleLogin } from "../utils/superbase";
+import AppText from "../components/AppText";
 
 const LoginForm = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();

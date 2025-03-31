@@ -7,9 +7,9 @@ import { UserIcon } from "../icons";
 import ListItem from "../components/ListItem";
 import { ListItemProps } from "../types/dashboard";
 import { AppEntity } from "../state/app-entity";
-import { getSubscriptionStatus } from "../utils/paywall";
+import { getSubscriptionStatus, subscriber } from "../utils/paywall";
 import AppText from "../components/AppText";
-
+import colors from "../constant/Color";
 
 const Profile = () => {
   const { session } = AppEntity.get();
@@ -20,7 +20,6 @@ const Profile = () => {
       setSubscription(sub);
     });
   }, []);
-
 
   const data: (ListItemProps | any)[] = [
     {
@@ -68,11 +67,18 @@ const Profile = () => {
             Total Credit ({subscription?.type})
           </AppText>
           <AppText style={tw`text-lg `}>
-            ({subscription?.credit_remaining})
+            ({subscription?.credit_remaining}){" "}
           </AppText>
+          {subscription?.credit_remaining < 5 && (
+            <AppText style={tw`text-sm text-[${colors.primary}]`}>
+              Click to subscribe
+            </AppText>
+          )}
         </View>
       ),
-      onPress: () => {},
+      onPress: () => {
+        subscription?.credit_remaining < 5  && subscriber()
+      },
     },
   ];
   return (

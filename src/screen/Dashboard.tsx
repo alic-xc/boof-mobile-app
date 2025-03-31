@@ -147,6 +147,7 @@ const Dashboard = () => {
   React.useEffect(() => {
     const checkInitialStatus = async () => {
       const sub = await getSubscriptionStatus();
+      console.log(sub);
       if (
         !sub.isActive ||
         (sub.isTrial && new Date(sub.expiryDate) < new Date())

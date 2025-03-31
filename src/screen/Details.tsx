@@ -23,7 +23,6 @@ import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../types/navigation-types";
 import AppText from "../components/AppText";
 
-
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 const Details = () => {
@@ -191,7 +190,7 @@ const Details = () => {
             </AppText>
           </View>
         </View>
-        <AppText style={tw`mt-2`}>{label}</AppText>
+        <AppText style={tw`mt-2 text-xl`}>{label}</AppText>
       </View>
     );
   };
@@ -232,16 +231,16 @@ const Details = () => {
                   />
                 </Animated.View>
               </View>
-              <AppText style={tw`text-xl mt-4`}>Summary</AppText>
-              <AppText style={tw`mt-2 text-justify leading-5`}>
+              <AppText style={tw`text-2xl mt-4 font-bold`}>Summary</AppText>
+              <AppText style={tw`mt-2 text-justify text-lg leading-6`}>
                 {summary.overview}
               </AppText>
-              <AppText style={tw`mt-1 font-bold`}>
+              <AppText style={tw`mt-1 text-xl font-bold`}>
                 Clauses: {summary.totalClauses}
               </AppText>
 
               {/* Key Points */}
-              <AppText style={tw`text-xl mt-6`}>Key Points</AppText>
+              <AppText style={tw`text-2xl mt-6`}>Key Points</AppText>
               {keyPoints.map((point, index) => (
                 <TouchableOpacity
                   key={index}
@@ -260,36 +259,43 @@ const Details = () => {
               ))}
 
               {/* Fairness */}
-              <AppText style={tw`text-xl mt-6`}>Fairness</AppText>
+              <AppText style={tw`text-2xl mt-6`}>Fairness</AppText>
 
               {fairness.issues.map((issue, index) => (
-                <AppText key={index} style={tw`mt-2`}>
+                <AppText key={index} style={tw`mt-2 text-lg text-justify`}>
                   {issue.description} ({issue.partyFavored})
                 </AppText>
               ))}
 
               {/* Compliance Summary */}
-              <AppText style={tw`text-xl mt-6`}>Compliance Summary</AppText>
-              <AppText style={tw`mt-2`}>{complianceSummary.details}</AppText>
-              <AppText style={tw`mt-1`}>
+              <AppText style={tw`text-2xl mt-6`}>Compliance Summary</AppText>
+              <AppText style={tw`mt-2 text-lg text-justify`}>
+                {complianceSummary.details}
+              </AppText>
+              <AppText style={tw`mt-1 text-[red]`}>
                 Issues: {complianceSummary.issuesCount}
               </AppText>
 
               {/* Blind Spots */}
-              <AppText style={tw`text-xl mt-6`}>Blind Spots</AppText>
+              <AppText style={tw`text-2xl mt-6`}>Blind Spots</AppText>
               {blindSpots.map((spot, index) => (
                 <View key={index} style={tw`mt-2`}>
-                  <AppText>{spot.description}</AppText>
-                  <AppText style={tw`text-gray-600`}>
-                    Recommendation: {spot.recommendation}
+                  <AppText style={tw`mt-2 text-lg text-justify`}>
+                    {spot.description}
+                  </AppText>
+                  <AppText style={tw`text-gray-600 mt-1 text-lg`}>
+                    <AppText style={tw`text-[green] font-[600]  text-lg `}>
+                      Recommendation:
+                    </AppText>{" "}
+                    {spot.recommendation}
                   </AppText>
                 </View>
               ))}
 
               {/* Metrics */}
-              <AppText style={tw`text-xl mt-6`}>Metrics</AppText>
+              <AppText style={tw`text-2xl mt-6`}>Metrics</AppText>
               <View style={tw`px-2`}>
-                <AppText style={tw`mt-5 font-bold`}>Risk Distribution</AppText>
+                <AppText style={tw`mt-5 font-bold text-lg`}>Risk Distribution</AppText>
                 <View style={tw`flex-row justify-around mb-5`}>
                   <View style={tw`flex flex-col items-center `}>
                     <AppText
@@ -335,9 +341,9 @@ const Details = () => {
                   {metrics.clauseTypes.map((type, index) => (
                     <View
                       key={index}
-                      style={tw`flex flex-row justify-between items-center w-full `}
+                      style={tw`flex flex-row justify-between items-center w-full border-2 border-[white]`}
                     >
-                      <AppText style={tw`text-center font-light text-lg`}>
+                      <AppText style={tw`text-left font-light text-lg`}>
                         {type.type}
                       </AppText>
                       <AppText
@@ -371,7 +377,7 @@ const Details = () => {
                   <AppText
                     style={tw`text-${getSeverityColor(
                       selectedPoint.riskLevel
-                    )} font-medium`}
+                    )} font-medium text-lg`}
                   >
                     {selectedPoint.riskLevel.toUpperCase()} RISK
                   </AppText>
@@ -386,7 +392,7 @@ const Details = () => {
                       ? "Compliant"
                       : "Non-Compliant"}
                   </AppText>
-                  <AppText style={tw`text-gray-700`}>
+                  <AppText style={tw`text-gray-700 text-lg`}>
                     {selectedPoint.compliance.notes}
                   </AppText>
                 </View>

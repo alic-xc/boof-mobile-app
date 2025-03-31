@@ -32,7 +32,8 @@ const LoadingScreen = () => {
   const token = session?.access_token;
   const country = "US"; // Example; make dynamic based on user input
   const { generateLegalSummary } = useLegalHook();
-  // Helper to render each step
+  // Helper to render each ste
+
   const renderStep = (status: string, text: string) => {
     const isLoading = status === "loading";
     const isActive = status === "active";
@@ -213,8 +214,10 @@ const LoadingScreen = () => {
         country
       );
     };
-
-    processDocument();
+    console.log(pdfText);
+    if (pdfText.length > 1) {
+      processDocument();
+    }
   }, [pdfText]);
 
   return (
@@ -228,8 +231,15 @@ const LoadingScreen = () => {
           {summaryStatus !== "pending" &&
             renderStep(summaryStatus, "Generating Summary")}
           {isError && (
-            <Button onPress={() => navigation.goBack()}>
-              <AppText>Close</AppText>
+            <Button
+              style="py-3 "
+              onPress={() => navigation.goBack()}
+            >
+              <View
+                style={tw``}
+              >
+                <AppText style={tw`text-white text-center text-lg`}>Go Back</AppText>
+              </View>
             </Button>
           )}
         </View>
