@@ -69,7 +69,8 @@ const Profile = () => {
           <AppText style={tw`text-lg `}>
             ({subscription?.credit_remaining}){" "}
           </AppText>
-          {subscription?.credit_remaining < 5 && (
+          {(subscription?.credit_remaining < 5 ||
+            subscription?.type == "none") && (
             <AppText style={tw`text-sm text-[${colors.primary}]`}>
               Click to subscribe
             </AppText>
@@ -77,7 +78,7 @@ const Profile = () => {
         </View>
       ),
       onPress: () => {
-        subscription?.credit_remaining < 5  && subscriber()
+        subscription?.credit_remaining < 5 && subscriber();
       },
     },
   ];

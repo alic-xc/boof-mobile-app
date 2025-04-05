@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, Linking } from "react-native";
+import { View, Text, ScrollView, Linking, Alert } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import tw from "twrnc";
@@ -11,12 +11,14 @@ import { LeftIcon } from "../icons";
 import { AppEntity } from "../state/app-entity";
 import { handleLogout } from "../utils/superbase";
 import AppText from "../components/AppText";
+import { BASE_URL } from "../utils/constants";
 
 const rightIcon = <LeftIcon width={24} height={24} color="black" />;
 
 const More = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  const { subscription } = AppEntity.use();
+  const { session } = AppEntity.use(); // Assuming data[0] is the PDF URI
+  const token = session?.access_token;
 
   const data: (ListItemProps | any)[] = [
     {
@@ -60,6 +62,53 @@ const More = () => {
             navigation.navigate("Login");
           }
         });
+      },
+    },
+    {
+      icon: rightIcon,
+      component: (
+        <AppText style={tw`text-lg font-bold`}>Delete Account</AppText>
+      ),
+      onPress: () => {
+        Alert.alert(
+          `Account Deletion`,
+          `Do you wish to proceed? Please Note: this account can not be recovered after deletion.`,
+          [
+            {
+              style: "cancel",
+              text: "Cancel",
+            },
+            {
+              style: "default",
+              text: "Proceed",
+              onPress: async () => {
+                if (!token) throw new Error("User not authenticated");
+
+                const response = await fetch(
+                  `${BASE_URL}/api/user/delete-account`,
+                  {
+                    method: "DELETE",
+                    headers: {
+                      Authorization: `Bearer ${token}`,
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({}),
+                  }
+                );
+
+                const data = await response.json();
+                if (!response.ok) {
+                  throw new Error(data.error || "Unable to complete action.");
+                }
+                handleLogout().then((res) => {
+                  if (res === "completed") {
+                    navigation.navigate("Login");
+                  }
+                });
+              },
+            },
+          ]
+        );
       },
     },
   ];

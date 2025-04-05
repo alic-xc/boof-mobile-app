@@ -32,7 +32,6 @@ const useLegalHook = () => {
 
   //   const API_URL = "https://openrouter.ai/api/v1/chat/completions";
   //   const API_KEY =
-  //     "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"; // Securely store this
 
   //   try {
   //     const response = await fetch(API_URL, {
@@ -325,7 +324,7 @@ const useLegalHook = () => {
     setAnalyseStatus: React.Dispatch<
       React.SetStateAction<"pending" | "loading" | "active" | "error">
     >,
-    country: string,
+    country: string
   ) => {
     if (!text) {
       setAnalyseStatus("error");

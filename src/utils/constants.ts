@@ -8,5 +8,5 @@ export const PAPERSIZE = [
 export const HAS_SEEN_ONBOARDING = "hasSeenOnboarding";
 export const BASE_URL = "https://boof-api.alicsystems.com";
 export const MonFont = {
-  fontFamily: 'Montserrat_400Regular'
-}
+  fontFamily: "Montserrat_400Regular",
+};
